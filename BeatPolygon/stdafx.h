@@ -23,9 +23,10 @@ public:
 	float r;
 	float g;
 	float b;
+	float a;
 public:
 	Vertex() = default;
-	Vertex(glm::vec3 vec,glm::vec3 color) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, r{ color.x }, g{ color.y }, b{color.z} {};
+	Vertex(glm::vec3 vec, glm::vec4 color) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, r{ color.x }, g{ color.y }, b{ color.z }, a{ color.a } {};
 
 };
 
