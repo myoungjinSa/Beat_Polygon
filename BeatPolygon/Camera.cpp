@@ -17,7 +17,7 @@ void Camera::Update(const GLuint& sObj,float width,float height)
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &view[0][0]);
 	
 
-	projection = glm::perspective(glm::radians(60.0f), width / height, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(90.0f), width / height, 5.0f, 100.0f);
 	//projection = glm::ortho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	unsigned int projectionLocation = glGetUniformLocation(sObj, "projectionTransform");
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
@@ -28,6 +28,7 @@ void Camera::Update(const GLuint& sObj,float width,float height)
 void Camera::SetPosition(const glm::vec3& pos)
 {
 	cameraPos = pos;
+	
 	trMatrix[3].x = cameraPos.x;
 	trMatrix[3].y = cameraPos.y;
 	trMatrix[3].z = cameraPos.z;

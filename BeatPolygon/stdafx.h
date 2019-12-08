@@ -18,7 +18,20 @@
 #include <array>
 #include <random>
 
+	// 키입력 정의
+enum KEY_TYPE
+{
+	NONE				= 0x0000,
+	UP					= 0x0001,
+	DOWN				= 0x0002,
+	RIGHT				= 0x0004,
+	LEFT					= 0x0008,
 
+	UP_RIGHT			= 0x0005,
+	UP_LEFT			= 0x0009,
+	DOWN_RIGHT	= 0x0006,
+	DOWN_LEFT		= 0x000A
+};
 class Diffuse_Vertex
 {
 public:

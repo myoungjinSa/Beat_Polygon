@@ -9,6 +9,7 @@ class Light;
 class Pyramid;
 class Snow;
 class AlphaBlock;
+class WallManager;
 
 class Framework
 {
@@ -29,31 +30,30 @@ public:
 	void CreateBlocks();
 	void CreateLeftCube();
 	void CreateRightCube();
+	void CreateCeiling();
+	void CreateWallManager();
 
 	void CreateTexture();
 	void SetTexture();
 
+	void CheckCollision();
 	void RotateCamera(bool bRot);
-	void ObjRotate();
-
 	void Update();
 	void DrawRightWall();
 	void DrawLeftWall();
+	void DrawCeiling();
 	void DrawFloor();
 	void Draw();
 	GLvoid Reshape(int w, int h);
-
-
-	void Reset();
-	
-
+	void StartDash();
+	void EndDash();
 public:
 
 	Camera* pCamera{ nullptr };
-	
-	enum class SPIN_DIR {LEFT,RIGHT} baseFloorDir;
-	enum class MIDDLE_SPIN_DIR {LEFT,RIGHT} middleFloorDir;
-	enum class TOP_SPIN_DIR {LEFT,RIGHT} topFloorDir;
+
+	enum class SPIN_DIR { LEFT, RIGHT } baseFloorDir;
+	enum class MIDDLE_SPIN_DIR { LEFT, RIGHT } middleFloorDir;
+	enum class TOP_SPIN_DIR { LEFT, RIGHT } topFloorDir;
 
 	const int blockCount = 5;
 	const int snowCount = 100;
@@ -61,6 +61,7 @@ public:
 	Cube** pCube{ nullptr };
 	Cube** pLeftCube{ nullptr };
 	Cube** pRightCube{ nullptr };
+	Cube** pCeiling{ nullptr };
 
 
 	AlphaBlock** pBlocks{ nullptr };
@@ -71,13 +72,29 @@ public:
 	GLuint GetShaderProgram(int i) { return shaderProgram[i]; }
 
 	bool snowStop{ false };
+
+
+
 private:
-	
+
+	struct MapInfo 
+	{
+		float leftPos;
+		float rightPos;
+		float upPos;
+		float downPos;
+
+		MapInfo() :leftPos{ 0.0f }, rightPos{ 0.0f }, upPos{ 0.0f }, downPos{ 0.0f }{}
+	}mapInfo;
+
 	GLuint sampler;
 	GLuint texture1;
 	GLuint shaderProgram[3];
 
+	unsigned short keyCombination{0};
 	
+
+	WallManager* pWallManager{ nullptr };
 	bool bMiddleRotate{ false };
 	
 	const int cubeCount{ 10 };

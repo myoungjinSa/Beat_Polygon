@@ -3,6 +3,7 @@
 #include "Framework.h"
 #include "stb_image.h"
 
+#include "WallManager.h"
 #include "Cube.h"
 #include "Camera.h"
 #include "Light.h"
@@ -13,6 +14,7 @@
 
 Framework::Framework()
 {
+
 
 
 }
@@ -115,18 +117,31 @@ void Framework::Init(int argc,char** argv)
 	InitShader();
 	CreateTexture();
 	CreateCube();
+	CreateCeiling();
 	CreateRightCube();
 	CreateLeftCube();
 	CreateLight();
-	CreateBlocks();
-	CreatePyramid();
+//	CreateBlocks();
+//	CreatePyramid();
 	CreateSnow();
-	
+	CreateWallManager();
+
 	//CreateObjModel();
-	CreateCamera(glm::vec3{ 0.0f,5.0f,10.0f }, glm::vec3{ 0.0f,5.0f,-1.0f }, glm::vec3{ 0.0f,1.0f,0.0f });
+	CreateCamera(glm::vec3{ pLight->GetPosition() + glm::vec3(0.0f,0.0f,17.0f)}, glm::vec3{ 0.0f,6.0f,-1.0f}, glm::vec3{ 0.0f,1.0f,0.0f });
 	timer.Start();
 
 
+}
+void Framework::CreateWallManager()
+{
+	pWallManager = new WallManager{};
+
+	if(pWallManager)
+	{
+		pWallManager->Create(shaderProgram[2]);
+
+
+	}
 }
 
 void Framework::CreatePyramid()
@@ -142,14 +157,14 @@ void Framework::CreatePyramid()
 void Framework::CreateLight()
 {
 	pLight = new Light{
-		Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, 0.1f), glm::vec4(1.0f, 1.0f, 1.0f,1.0f)),		//leftTopFront
-		Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f), glm::vec4(1.0f, 1.0f, 1.0f,1.0f)),		//leftBottomFront
-		Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f), glm::vec4(1.0f, 1.0f, 1.0f,1.0f)),		//rightTopFront
-		Diffuse_Vertex(glm::vec3(0.1f, -0.1f, 0.1f), glm::vec4(1.0f, 1.0f, 1.0f,1.0f)),		//rightBottomFront
-		Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec4(1.0f, 1.0f, 1.0f,1.0f)),	//leftBottomBack
-		Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f), glm::vec4(1.0f, 1.0f, 1.0f,1.0f)),		//leftTopBack
-		Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f), glm::vec4(1.0f, 1.0f, 1.0f,1.0f)),		//rightTopBack
-		Diffuse_Vertex(glm::vec3(0.1f, -0.1f, -0.1f), glm::vec4(1.0f, 1.0f, 1.1f,1.0f))		//rightBottomBack};
+		Diffuse_Vertex(glm::vec3(-0.5f, 0.5f, 0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//leftTopFront
+		Diffuse_Vertex(glm::vec3(-0.5f, -0.5f, 0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//leftBottomFront
+		Diffuse_Vertex(glm::vec3(0.5f, 0.5f, 0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//rightTopFront
+		Diffuse_Vertex(glm::vec3(0.5f, -0.5f, 0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//rightBottomFront
+		Diffuse_Vertex(glm::vec3(-0.5f, -0.5f, -0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),	//leftBottomBack
+		Diffuse_Vertex(glm::vec3(-0.5f, 0.5f, -0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//leftTopBack
+		Diffuse_Vertex(glm::vec3(0.5f, 0.5f, -0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//rightTopBack
+		Diffuse_Vertex(glm::vec3(0.5f, -0.5f, -0.1f), glm::vec4(1.0f, 0.0f,0.0f,1.0f))		//rightBottomBack};
 	};
 	glGenBuffers(1, &pLight->vertexBufferObject);
 
@@ -215,8 +230,12 @@ void Framework::CreateLight()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * pLight->indexCount, &pLight->Indices[0], GL_STATIC_DRAW);
 
 	pLight->InitShader(shaderProgram[1]);
-	pLight->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	pLight->SetPosition(glm::vec3(0.0f, 6.0f, -5.0f));
 	pLight->SetRange(10.0f);
+	pLight->SetSpeed(20.0f);
+	pLight->SetWidth(1.0f);
+	pLight->SetHeight(1.0f);
+
 }
 
 
@@ -321,6 +340,20 @@ void Framework::DrawLeftWall()
 		}
 	}
 }
+void Framework::DrawCeiling()
+{
+	glFrontFace(GL_CCW);
+	if (pCeiling)
+	{
+		for (int i = 0; i < cubeCount; ++i)
+		{
+			
+			pCeiling[i]->Draw(shaderProgram[0]);
+		
+		}
+	}
+
+}
 void Framework::DrawFloor()
 {
 	glFrontFace(GL_CCW);
@@ -335,13 +368,91 @@ void Framework::DrawFloor()
 	}
 
 }
+void Framework::StartDash()
+{
+	pLight->bDash = true;
+}
+void Framework::EndDash()
+{
+	pLight->bDash = false;
+}
 void Framework::Update()
 {
-	if (pCamera)
+	
+	if(GetAsyncKeyState(VK_LSHIFT) & 0x8000)
 	{
-		if(pCamera->bRotation)
-			pCamera->Rotate(timer, glm::vec3(0.0f, 1.0f, 0.0f));
+		if (pLight->bDash == false)
+			StartDash();
 	}
+	if(GetAsyncKeyState(VK_RIGHT) & 0x8000)
+	{
+		float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
+		float dashPower = 1.0f;
+		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
+		pLight->position.x += moveSpeed *dashPower;
+	//	pCamera->cameraPos.x += moveSpeed * dashPower;
+	//	pCamera->cameraTarget.x += moveSpeed * dashPower;
+	}
+	if(GetAsyncKeyState(VK_LEFT) & 0x8000)
+	{
+		float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
+		float dashPower = 1.0f;
+		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
+		pLight->position.x -= moveSpeed * dashPower;
+	//	pCamera->cameraPos.x -= moveSpeed * dashPower;
+	//	pCamera->cameraTarget.x -= moveSpeed * dashPower;
+	}
+	if(GetAsyncKeyState(VK_UP) & 0x8000)
+	{
+		float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
+		float dashPower = 1.0f;
+		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
+		pLight->position.y += moveSpeed * dashPower;
+		//pCamera->cameraPos.y += moveSpeed * dashPower;
+		//pCamera->cameraTarget.y += moveSpeed * dashPower;
+	}
+	if(GetAsyncKeyState(VK_DOWN) & 0x8000)
+	{
+		float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
+		float dashPower = 1.0f;
+		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
+		pLight->position.y -= moveSpeed * dashPower;
+		//pCamera->cameraPos.y -= moveSpeed * dashPower;
+		//pCamera->cameraTarget.y -= moveSpeed * dashPower;
+	}
+
+	CheckCollision();
+	//std::cout << keyCombination << std::endl;
+}
+
+void Framework::CheckCollision()
+{
+	if(pLight->position.x - pLight->GetWidth() <= mapInfo.leftPos  )
+	{
+		pLight->position.x = mapInfo.leftPos + pLight->GetWidth();
+		//pCamera->cameraPos.x = mapInfo.leftPos + pLight->GetWidth();
+		//pCamera->cameraTarget.x = mapInfo.leftPos + pLight->GetWidth();
+	}
+	if(pLight->position.x + pLight->GetWidth() >= mapInfo.rightPos)
+	{
+		pLight->position.x = mapInfo.rightPos - pLight->GetWidth();
+		//pCamera->cameraPos.x = mapInfo.rightPos - pLight->GetWidth();
+		//pCamera->cameraTarget.x = mapInfo.rightPos - pLight->GetWidth();
+	}
+	if(pLight->position.y - pLight->GetHeight()<= mapInfo.downPos)
+	{
+		pLight->position.y = mapInfo.downPos + pLight->GetHeight();
+		//pCamera->cameraPos.y = mapInfo.downPos + pLight->GetHeight();
+		//pCamera->cameraTarget.y = mapInfo.downPos + pLight->GetHeight();
+	}
+	if(pLight->position.y + pLight->GetHeight()>= mapInfo.upPos)
+	{
+		pLight->position.y = mapInfo.upPos - pLight->GetHeight();
+		//pCamera->cameraPos.y = mapInfo.upPos - pLight->GetHeight();
+		//pCamera->cameraTarget.y = mapInfo.upPos - pLight->GetHeight();
+	}
+
+
 }
 void Framework::Draw()
 {
@@ -352,24 +463,21 @@ void Framework::Draw()
 	Update();
 
 	glEnable(GL_CULL_FACE);
-	
 	glCullFace(GL_BACK);
-
 	glEnable(GL_DEPTH_TEST);
 	
-
-
 	glUseProgram(shaderProgram[0]);
 	DrawLeftWall();
 	DrawRightWall();
 	DrawFloor();
+	DrawCeiling();
 	
 	if (pCamera) {
-		pCamera->Update(shaderProgram[0], fWindowWidth, fWindowHeight);
-
 
 		if (pLight)
 		{
+			pCamera->Update(shaderProgram[0], fWindowWidth, fWindowHeight);
+
 			SetTexture();
 			if(pSnow)
 			{
@@ -381,7 +489,7 @@ void Framework::Draw()
 				}
 			}
 			glBindTexture(GL_TEXTURE_2D, 0);
-			pLight->Rotate(pCamera, timer.GetTimeElapsed());
+
 			pLight->Draw(shaderProgram[0]);
 	
 
@@ -396,17 +504,23 @@ void Framework::Draw()
 	glUseProgram(shaderProgram[2]);
 
 	
-	if (pPyramid)
+	//if (pPyramid)
+	//{
+	//	pPyramid->Draw(shaderProgram[2]);
+	//}
+	//if(pBlocks)
+	//{
+	//	for(int i =0;i<blockCount;++i)
+	//	{
+	//		pBlocks[i]->Draw(shaderProgram[2]);
+	//	}
+	//}
+	if(pWallManager)
 	{
-		pPyramid->Draw(shaderProgram[2]);
+		pWallManager->Update(timer.GetTimeElapsed());
+		pWallManager->Draw(shaderProgram[2]);
 	}
-	if(pBlocks)
-	{
-		for(int i =0;i<blockCount;++i)
-		{
-			pBlocks[i]->Draw(shaderProgram[2]);
-		}
-	}
+
 	if (pCamera)
 	{
 		pCamera->Update(shaderProgram[2], fWindowWidth, fWindowHeight);
@@ -615,6 +729,7 @@ void Framework::CreateCube()
 			pCube[i]->CreateTexture(shaderProgram[0],"ice3.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			pCube[i]->SetPosition(glm::vec3(0.0f, 0.0f, (-30.0f*i)));
+			mapInfo.downPos = 0.2f;
 		}
 
 
@@ -622,6 +737,94 @@ void Framework::CreateCube()
 
 
 }
+void Framework::CreateCeiling()
+{
+
+	pCeiling = new Cube*[cubeCount];
+	
+
+	if (pCeiling) 
+	{
+		for (int i = 0; i < cubeCount; ++i)
+		{
+			pCeiling[i] = new Cube{};
+			pCeiling[i]->vCube[0] = UVVertex(glm::vec3(-15.0f, 10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f));
+			pCeiling[i]->vCube[1] = UVVertex(glm::vec3(-15.0f, 10.0f, -30.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
+			pCeiling[i]->vCube[2] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f));
+
+
+			pCeiling[i]->vCube[3] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f));
+			pCeiling[i]->vCube[4] = UVVertex(glm::vec3(-15.0f,10.0f, -30.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
+			pCeiling[i]->vCube[5] = UVVertex(glm::vec3(15.0f, 10.0f, -30.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec2(1.0f, 0.0f));
+
+			//left
+			pCeiling[i]->vCube[6] = UVVertex(glm::vec3(-15.0f, 10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f));
+			pCeiling[i]->vCube[7] = UVVertex(glm::vec3(-15.0f, 10.2f, 0.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
+			pCeiling[i]->vCube[8] = UVVertex(glm::vec3(-15.0f, 10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 0.0f));
+
+
+			pCeiling[i]->vCube[9] = UVVertex(glm::vec3(-15.0f, 10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f));
+			pCeiling[i]->vCube[10] = UVVertex(glm::vec3(-15.0f,10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 0.0f));
+			pCeiling[i]->vCube[11] = UVVertex(glm::vec3(-15.0f,10.0f, -30.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec2(1.0f, 0.0f));
+
+			//back
+			pCeiling[i]->vCube[12] = UVVertex(glm::vec3(-15.0f,10.2f, 0.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
+			pCeiling[i]->vCube[13] = UVVertex(glm::vec3(15.0f, 10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
+			pCeiling[i]->vCube[14] = UVVertex(glm::vec3(-15.0f,10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 0.0f));
+
+
+			pCeiling[i]->vCube[15] = UVVertex(glm::vec3(15.0f,10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
+			pCeiling[i]->vCube[16] = UVVertex(glm::vec3(15.0f,10.0f, 0.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 0.0f));
+			pCeiling[i]->vCube[17] = UVVertex(glm::vec3(-15.0f,10.2f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 0.0f));
+
+			//right
+			pCeiling[i]->vCube[18] = UVVertex(glm::vec3(15.0f, 10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
+			pCeiling[i]->vCube[19] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f));
+			pCeiling[i]->vCube[20] = UVVertex(glm::vec3(15.0f, 10.0f, 0.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 0.0f));
+
+
+			pCeiling[i]->vCube[21] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f));
+			pCeiling[i]->vCube[22] = UVVertex(glm::vec3(15.0f, 10.0f, -30.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
+			pCeiling[i]->vCube[23] = UVVertex(glm::vec3(15.0f, 10.0f, 0.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 0.0f));
+
+			//top
+			pCeiling[i]->vCube[24] = UVVertex(glm::vec3(15.0f, 10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
+			pCeiling[i]->vCube[25] = UVVertex(glm::vec3(-15.0f,10.2f, 0.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
+			pCeiling[i]->vCube[26] = UVVertex(glm::vec3(-15.0f,10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
+
+
+			pCeiling[i]->vCube[27] = UVVertex(glm::vec3(15.0f, 10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
+			pCeiling[i]->vCube[28] = UVVertex(glm::vec3(-15.0f,10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
+			pCeiling[i]->vCube[29] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f));
+
+			//bottom
+			pCeiling[i]->vCube[30] = UVVertex(glm::vec3(-15.0f,10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
+			pCeiling[i]->vCube[31] = UVVertex(glm::vec3(15.0f, 10.0f, 0.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
+			pCeiling[i]->vCube[32] = UVVertex(glm::vec3(15.0f, 10.0f, -30.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
+
+
+			pCeiling[i]->vCube[33] = UVVertex(glm::vec3(-15.0f,10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
+			pCeiling[i]->vCube[34] = UVVertex(glm::vec3(15.0f, 10.0f, -30.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
+			pCeiling[i]->vCube[35] = UVVertex(glm::vec3(-15.0f,10.0f, -30.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec2(1.0f, 0.0f));
+
+
+			glGenBuffers(1, &pCeiling[i]->vertexBufferObject);
+
+			glBindBuffer(GL_ARRAY_BUFFER, pCeiling[i]->vertexBufferObject);
+			glBufferData(GL_ARRAY_BUFFER, pCeiling[i]->vCube.size() * sizeof(UVVertex), &pCeiling[i]->vCube, GL_STATIC_DRAW);
+
+			pCeiling[i]->CreateTexture(shaderProgram[0],"ice3.png");
+			//pCube[i]->Create(shaderProgram[0]);
+			pCeiling[i]->SetPosition(glm::vec3(0.0f, 0.0f, (-30.0f*i)));
+			mapInfo.upPos = 10.0f;
+		}
+
+
+	}
+
+
+}
+
 void Framework::CreateRightCube()
 {
 	pRightCube = new Cube*[cubeCount];
@@ -700,11 +903,14 @@ void Framework::CreateRightCube()
 			pRightCube[i]->CreateTexture(shaderProgram[0],"ice1.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			pRightCube[i]->SetPosition(glm::vec3(15.0f, 0.0f, (-30.0f * i)));
+			mapInfo.rightPos = 14.0f;
 		}
 
 
 	}
 }
+
+
 void Framework::CreateLeftCube()
 {
 	pLeftCube = new Cube*[cubeCount];
@@ -761,7 +967,7 @@ void Framework::CreateLeftCube()
 
 
 			pLeftCube[i]->vCube[27] = UVVertex(glm::vec3(1.0f, 10.0f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
-			pLeftCube[i]->vCube[28] = UVVertex(glm::vec3(-1.0f, 10.0f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
+			pLeftCube[i]->vCube[28] = UVVertex(glm::vec3(-1.0f,10.0f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
 			pLeftCube[i]->vCube[29] = UVVertex(glm::vec3(1.0f, 10.0f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f));
 
 			//bottom
@@ -784,6 +990,7 @@ void Framework::CreateLeftCube()
 			//pCube[i]->Create(shaderProgram[0]);
 			
 			pLeftCube[i]->SetPosition(glm::vec3(-15.0f, 0.0f, (-30.0f * i)));
+			mapInfo.leftPos = -14.0f;
 		}
 
 

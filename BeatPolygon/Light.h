@@ -13,8 +13,17 @@ public:
 	void Draw(const GLuint& sObj)final;
 
 	void SetRange(float range);
-	void Rotate(Camera *pCamera,float fTimeElapsed);
 	void SetPosition(const glm::vec3& pos);
+	void SetSpeed(float speed);
+	void SetWidth(float w);
+	void SetHeight(float h);
+	
+	float GetWidth() { return width; }
+	float GetHeight() { return height; }
+	float GetSpeed() { return fSpeed; }
+
+
+	glm::vec3 GetPosition() { return position; }
 	void InitShader(GLuint n);
 
 
@@ -35,6 +44,7 @@ public:
 	GLuint shaderObject;
 	GLuint vertexBufferObject;
 	GLuint elementBufferObject;
+	bool bDash{ false };
 
 	unsigned int Indices[36];
 
@@ -42,11 +52,12 @@ public:
 	const int indexCount = 36;
 
 	enum class DIRECTION{ LEFT,RIGHT,STOP }dir;
+	
 
-
-	bool bLightOn{ true };
 private:
-
+	
+	float width, height;
+	float fSpeed;
 	float fRange{ 0.0f };
 	glm::mat4 rm = glm::mat4(1.0f);
 	glm::vec3 look = glm::vec3(0.0f, 0.0f, 0.0f);

@@ -7,6 +7,7 @@
 GLvoid DrawScene();
 void KeyInput(unsigned char key, int x, int y);
 void SpecialKey(int key, int x, int y);
+void SpecialKeyUp(int key, int x, int y);
 void ProcessMouseEvent(int button, int state, int x, int y);
 
 Framework framework;
@@ -19,8 +20,9 @@ int main(int argc,char** argv)
 	glutDisplayFunc(DrawScene);
 	glutIdleFunc(DrawScene);
 	glutKeyboardFunc(KeyInput);	
-	glutSpecialFunc(SpecialKey);
+	//glutSpecialFunc(SpecialKey);
 	glutMouseFunc(ProcessMouseEvent);
+	glutSpecialUpFunc(SpecialKeyUp);
 	//glutMotionFunc(DragMouseFunc);
 
 	glutMainLoop();
@@ -75,11 +77,6 @@ void KeyInput(unsigned char key, int x, int y)
 		framework.pLight->position.z += 0.3f;
 		
 		break;
-	case'd':
-	case 'D':
-		framework.pLight->dir = Light::DIRECTION::STOP;
-
-		break;
 	case 'S':
 		framework.snowStop = true;
 		break;
@@ -100,49 +97,17 @@ void KeyInput(unsigned char key, int x, int y)
 
 	}
 }
-void SpecialKey(int key,int x, int y)
+void SpecialKeyUp(int key, int x, int y)
 {
-	switch(key)
-	{
-	case GLUT_KEY_LEFT:
-	{
-		framework.pLight->position.x -= 0.3f;
-		std::cout << framework.pLight->position.x << "," << framework.pLight->position.y << "," << framework.pLight->position.z<<std::endl;
-	}
-		break;
-
-	case GLUT_KEY_RIGHT:
-	{
-		framework.pLight->position.x += 0.3f;
-		std::cout << framework.pLight->position.x << "," << framework.pLight->position.y << "," << framework.pLight->position.z<<std::endl;
-	}
-		break;
-	case GLUT_KEY_UP:
-	{
-		//glm::vec3 pos = framework.pCamera->GetCameraPos();
-		//pos.y -= 0.1f;
-		//framework.pCamera->SetPosition(pos);
-		framework.pLight->position.y += 0.3f;
-		std::cout << framework.pLight->position.x << "," << framework.pLight->position.x << "," << framework.pLight->position.z<<std::endl;
-	}
-		break;
-	case GLUT_KEY_DOWN:
-	{
-
-		framework.pLight->position.y -= 0.3f;
-	//	std::cout << framework.pCube->lightPos.x << "," << framework.pCube->lightPos.y << "," << framework.pCube->lightPos.z<<std::endl;
-	}
-		break;
-	}
+	framework.EndDash();
 }
-
 
 GLvoid DrawScene()
 {
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	framework.Draw();
 	

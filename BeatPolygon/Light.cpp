@@ -4,11 +4,10 @@
 
 
 Light::Light(Diffuse_Vertex v0,Diffuse_Vertex v1,Diffuse_Vertex v2,Diffuse_Vertex v3,Diffuse_Vertex v4,Diffuse_Vertex v5,Diffuse_Vertex v6,Diffuse_Vertex v7)
-	:v0{v0},v1{v1},v2{v2},v3{v3},v4{v4},v5{v5},v6{v6},v7{v7}
+	:v0{v0},v1{v1},v2{v2},v3{v3},v4{v4},v5{v5},v6{v6},v7{v7},fSpeed{0.0f},width{0.0f},height{0.0f}
 {
 
 }
-
 Light::~Light()
 {
 	std::cout << "Light¼Ò¸ê" << std::endl;
@@ -26,22 +25,18 @@ void Light::SetRange(float range)
 {
 	fRange = range;
 }
+void Light::SetSpeed(float speed)
+{
+	fSpeed = speed;
+
+
+}
 
 void Light::InitShader(GLuint shaderObj)
 {
 	shaderObject = shaderObj;
 }
-void Light::Rotate(Camera *camera,float fTimeElapsed)
-{
-	
-	if(dir == DIRECTION::LEFT)
-		rmMatrix = glm::rotate(rmMatrix, glm::radians(fTimeElapsed * rotationSpeed), glm::vec3(0.0f, 0.0f, 1.0f));
-	else if(dir == DIRECTION::RIGHT)
-		rmMatrix = glm::rotate(rmMatrix, glm::radians(fTimeElapsed * -rotationSpeed), glm::vec3(0.0f, 0.0f, 1.0f));
-	
 
-	
-}
 void Light::Update(const GLuint& sObj)
 {
 
@@ -60,7 +55,15 @@ void Light::Update(const GLuint& sObj)
 
 
 }
+void Light::SetWidth(float w)
+{
+	width = w * 0.5f;
+}
 
+void Light::SetHeight(float h)
+{
+	height = h * 0.5f;
+}
 void Light::Draw(const GLuint& sObj)
 {
 	
