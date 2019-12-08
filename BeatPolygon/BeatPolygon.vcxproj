@@ -18,6 +18,47 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AlphaBlock.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Framework.cpp" />
+    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Pyramid.cpp" />
+    <ClCompile Include="Snow.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Wall.cpp" />
+    <ClCompile Include="WallManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AlphaBlock.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Framework.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Pyramid.h" />
+    <ClInclude Include="Snow.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="Wall.h" />
+    <ClInclude Include="WallManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="alphaFragmentShader.glfs" />
+    <None Include="alphaVertexShader.glvs" />
+    <None Include="fragment.glfs" />
+    <None Include="lightFs.glfs" />
+    <None Include="lightVs.glvs" />
+    <None Include="vertexShader.glvs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="ice1.png" />
+    <Image Include="ice2.png" />
+    <Image Include="ice3.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{6B9C15FF-90AA-4789-B642-1C80C8E7340E}</ProjectGuid>
@@ -138,23 +179,6 @@
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Cube.cpp" />
-    <ClCompile Include="Framework.cpp" />
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Cube.h" />
-    <ClInclude Include="Framework.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="fragment.glfs" />
-    <None Include="vertexShader.glvs" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

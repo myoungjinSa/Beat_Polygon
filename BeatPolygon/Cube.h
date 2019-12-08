@@ -4,33 +4,42 @@
 class Cube : public Mesh
 {
 
-	
+public:
 	glm::mat4 trMatrix = glm::mat4(1.0f);
 	glm::mat4 rmMatrix = glm::mat4(1.0f);
 	glm::mat4 scMatrix = glm::mat4(1.0f);
 
+	glm::mat4 worldTransform = glm::mat4(1.0f);
 
+	glm::vec3 position = glm::vec3(0.0f,0.0f,0.0f);
+	std::array<UVVertex, 36> vCube;
+
+	int id;
 public:
 
-	Cube() = delete;
-	Cube(Vertex v0,Vertex v1,Vertex v2,Vertex v3,Vertex v4,Vertex v5,Vertex v6,Vertex v7);
-	~Cube();
+	Cube();
+	virtual ~Cube();
 
-	void Update(const GLuint &sObj)final;
-	void Draw(const GLuint & sObj) final;
+
+	void InitShader(GLuint shaderObj);
+	void Update(const GLuint &sObj);
+	void Draw(const GLuint & sObj);
+	void CreateTexture(GLuint sObj,const char* textureName);
+	void Create(GLuint sObj);
+	void SetID(int i) { id = i; }
+	void SetPosition(const glm::vec3 & pos);
+
+	glm::vec3 GetPosition();
 
 public:
-	Vertex v0; Vertex v1; Vertex v2; 
-	Vertex v3; Vertex v4; Vertex v5; 
-	Vertex v6; Vertex v7;
-
-
+	
+	GLuint sampler;
+	GLuint texture1;
+	GLuint shaderObject;
 	GLuint vertexBufferObject;
 	GLuint elementBufferObject;
 
 	unsigned int Indices[36];
-
-
 
 	const int vCount = 8;
 	const int indexCount = 36;
