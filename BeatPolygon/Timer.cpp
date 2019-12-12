@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Timer.h"
 
+std::chrono::steady_clock::time_point Timer::musicStartTime = std::chrono::steady_clock::now();
 Timer::Timer()
 {
 }
@@ -40,5 +41,8 @@ void Timer::Tick(float fLockFps)
 
 	elapsedTime = currTime;
 	fTimeElapsed = t.count();
+
+
 	//std::cout << t.c.count() << std::endl;
 }
+

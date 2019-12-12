@@ -2,8 +2,8 @@
 #include "WallManager.h"
 #include "Framework.h"
 #include "Light.h"
-#include <chrono>
-
+#include "Timer.h"
+#include <string>
 
 
 WallManager::WallManager()
@@ -32,25 +32,117 @@ void WallManager::Create(const GLuint& sObj,const GLuint& sParticleShaderObj)
 	{
 	
 		walls[i].Create(sObj,2.0f,2.0f,2.0f);
-		walls[i].SetPosition(glm::vec3(uxd(dre), 3.5f, -15.0f * (i + 1)));
+		walls[i].SetPosition(glm::vec3(uxd(dre), 3.5f, -15.0f * 5.0f));
 		walls[i].InitParticleShader(sParticleShaderObj);
 	}
 
 
 
 }
-
-void WallManager::Update(const float& time, Light* player)
+#ifndef WRITE_MUSIC
+void WallManager::ReadMusicFile()
 {
+	in.open("music.txt");
+
+
+	if(in.is_open())
+	{
+		while(std::getline(in,time))
+		{
+
+			//std::cout << time << std::endl;
+			nodeTimeVector.emplace_back(std::stof(time));
+		}
+	}
+	else
+	{
+		std::cout << "파일이 열리지 않았습니다.\n";
+	}
+	in.close();
+
+	std::cout << nodeTimeVector.size() << std::endl;
+	
+	blockCount = nodeTimeVector.size();
+	walls.reserve(blockCount+1);
 
 	for (int i = 0; i < blockCount; ++i)
 	{
-		
-		walls[i].Move(time);
-		if(CheckCollision(player, &walls[i]))
-		{
 
-			ProcessCollision(walls[i]);
+		walls.emplace_back(Wall{});
+	}
+}
+#endif
+
+#ifdef WRITE_MUSIC
+void WallManager::OpenMusicFile()
+{
+
+	fp.open("music.txt");
+	
+
+	
+}
+void WallManager::WriteMusicInfo(float time)
+{
+	this->time = std::to_string(time);
+
+	
+	std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();
+
+	//std::chrono::steady_clock::time_point elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currTime - elapsedTime)
+
+	std::chrono::milliseconds milli = std::chrono::duration_cast<std::chrono::milliseconds>(currTime - Timer::musicStartTime);
+	std::chrono::duration<float> t = milli;
+
+	//std::cout << t.count() << std::endl;
+
+	if (fp.is_open())
+	{
+		fp << t.count() << std::endl;
+
+	}
+}
+
+void WallManager::CloseMusicFile()
+{
+	if (fp.is_open())
+	{
+		fp.close();
+	}
+}
+#endif
+void WallManager::Update(const float& time, Light* player)
+{
+	
+	std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();
+
+	std::chrono::milliseconds elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currTime - Timer::musicStartTime);
+	std::chrono::duration<float> t = elapsedTime;
+
+	//static float currtime = 0.0f;
+	//currtime+= time;
+	static int nodeIndex = 0;
+	
+
+#ifndef WRITE_MUSIC
+	if(t.count() >= nodeTimeVector[nodeIndex] - 2.5f && nodeIndex < blockCount-1)
+	{
+		walls[nodeIndex].b_Active = true;
+		std::cout << nodeIndex << std::endl;
+		nodeIndex++;
+		
+	}
+#endif
+	for (int i = 0; i < blockCount; ++i)
+	{
+		if (walls[i].b_Active == true)
+		{
+			walls[i].Move(time);
+			if (CheckCollision(player, &walls[i]))
+			{
+
+				ProcessCollision(walls[i]);
+			}
 		}
 
 	}

@@ -62,6 +62,15 @@ Framework::~Framework()
 		pBlocks = nullptr;
 	}
 
+	if(pWallManager)
+	{
+#ifdef WRITE_MUSIC
+		pWallManager->CloseMusicFile();
+#endif
+		delete pWallManager;
+		pWallManager = nullptr;
+	}
+
 
 }
 
@@ -138,7 +147,8 @@ void Framework::Init(int argc,char** argv)
 	CreateCamera(glm::vec3{ pLight->GetPosition() + glm::vec3(0.0f,10.0f,35.0f)}, glm::vec3{ 0.0f,10.0f,-1.0f}, glm::vec3{ 0.0f,1.0f,0.0f });
 	timer.Start();
 
-
+	
+	
 }
 void Framework::CreateSound()
 {
@@ -146,8 +156,8 @@ void Framework::CreateSound()
 	
 	if (gameSound)
 	{
-		gameSound->Create("../BeatPolygon/sound/WhiteChristmas.mp3");
-		gameSound->PlaySOUND(0);
+		gameSound->Create("../BeatPolygon/sound/piano32.mp3");
+		
 	}
 
 }
@@ -158,9 +168,14 @@ void Framework::CreateWallManager()
 
 	if(pWallManager)
 	{
+		
+#ifdef WRITE_MUSIC
+		pWallManager->OpenMusicFile();
+#else
+		pWallManager->ReadMusicFile();
+#endif
+
 		pWallManager->Create(shaderProgram[2],shaderProgram[1]);
-
-
 	}
 }
 
@@ -177,7 +192,7 @@ void Framework::AddFont()
 {
 	if (uiManager) 
 	{
-		uiManager->AddUI(GLUT_BITMAP_TIMES_ROMAN_24,"score :",0.0f,-0.7f);
+		uiManager->AddUI(GLUT_BITMAP_TIMES_ROMAN_24,"score :",0.0f,0.7f);
 
 	}
 }
@@ -437,6 +452,15 @@ void Framework::Update()
 	}
 
 
+	if(gameSound->musicStart == false && gameSound)
+	{
+		gameSound->PlaySOUND(0);
+		Timer::musicStartTime = std::chrono::steady_clock::now();
+		gameSound->musicStart = true;
+
+	}
+	
+
 	CheckCollision();
 	
 }
@@ -469,6 +493,8 @@ void Framework::CheckCollision()
 void Framework::Draw()
 {
 	timer.Tick(0.0f);
+
+	
 
 	Reshape(fWindowWidth, fWindowHeight);
 
@@ -521,8 +547,11 @@ void Framework::Draw()
 	{
 		if (pLight)
 		{
-			pWallManager->Update(timer.GetTimeElapsed(), pLight);
-			pWallManager->Draw(timer.GetTimeElapsed(),shaderProgram[2]);
+			if (gameSound->musicStart)
+			{
+				pWallManager->Update(timer.GetTimeElapsed(), pLight);
+				pWallManager->Draw(timer.GetTimeElapsed(), shaderProgram[2]);
+			}
 		}
 	}
 
@@ -600,7 +629,7 @@ void Framework::CreateSnow()
 {
 	std::uniform_real_distribution<double>uxd(-15.0f, 15.0f);
 	std::uniform_real_distribution<double>uzd(-15.0f, 15.0f);
-	std::uniform_real_distribution<double> uyd(5.0f, 10.0f);
+	std::uniform_real_distribution<double> uyd(20.0f, 30.0f);
 	std::default_random_engine dre((unsigned int)time(0));
 
 	pSnow = new Snow*[100];
@@ -653,7 +682,7 @@ void Framework::CreateTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	unsigned char* data = stbi_load("ice1.png", &widthImage, &heightImage, &numberOfChannel,0);
+	unsigned char* data = stbi_load("ice4.png", &widthImage, &heightImage, &numberOfChannel,0);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImage, heightImage, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	int tLocation_1 = glGetUniformLocation(shaderProgram[0], "texture1"); 

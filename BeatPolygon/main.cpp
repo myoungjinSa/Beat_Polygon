@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Cube.h"
 #include "Light.h"
+#include "WallManager.h"
 
 GLvoid DrawScene();
 void KeyInput(unsigned char key, int x, int y);
@@ -90,6 +91,12 @@ void KeyInput(unsigned char key, int x, int y)
 	case 'y':
 		framework.RotateCamera(false);
 		break;
+#ifdef WRITE_MUSIC
+	case 'm':
+	case 'M':
+		framework.pWallManager->WriteMusicInfo(framework.timer.GetTimeElapsed());
+		break;
+#endif
 	case 'Q':
 	case 'q':
 		exit(1);
@@ -97,9 +104,11 @@ void KeyInput(unsigned char key, int x, int y)
 
 	}
 }
+
 void SpecialKeyUp(int key, int x, int y)
 {
 	framework.EndDash();
+
 }
 
 GLvoid DrawScene()
@@ -107,7 +116,7 @@ GLvoid DrawScene()
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 	framework.Draw();
 	

@@ -90,7 +90,7 @@ void Snow::MoveDown(float timeElapsed)
 	if(trMatrix[3].y <= 0.0f)
 	{
 	
-		trMatrix[3].y = 10.0f;
+		trMatrix[3].y = 30.0f;
 		
 	}
 }

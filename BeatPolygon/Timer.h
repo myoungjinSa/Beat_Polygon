@@ -15,6 +15,9 @@ public:
 
 	float GetTimeElapsed();
 
+
+public:
+	static std::chrono::steady_clock::time_point musicStartTime;
 private:
 	float fTimeElapsed;
 //	std::chrono::duration<float, std::chrono::milliseconds> fMilli;

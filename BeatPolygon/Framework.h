@@ -78,7 +78,7 @@ public:
 	GLuint GetShaderProgram(int i) { return shaderProgram[i]; }
 
 	bool snowStop{ false };
-
+	WallManager* pWallManager{ nullptr };
 	std::unique_ptr<GAMESOUND> gameSound;
 	std::unique_ptr<UIManager> uiManager;
 private:
@@ -100,7 +100,7 @@ private:
 	unsigned short keyCombination{0};
 	
 
-	WallManager* pWallManager{ nullptr };
+
 	bool bMiddleRotate{ false };
 	
 	const int cubeCount{ 10 };

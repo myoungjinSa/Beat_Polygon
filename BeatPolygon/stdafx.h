@@ -19,6 +19,8 @@
 #include <map>
 #include <random>
 
+
+//#define WRITE_MUSIC
 	// 키입력 정의
 enum KEY_TYPE
 {

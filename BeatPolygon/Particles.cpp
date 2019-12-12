@@ -15,64 +15,64 @@ Particle::~Particle()
 void Particle::Create(GLuint sObj,const glm::vec3& movingDir)
 {
 	//front
-	vCube[0] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[1] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[2] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[0] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[1] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[2] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 
-	vCube[3] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[4] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[5] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, -0.1f), glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[3] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[4] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[5] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, -0.1f), glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 	//left
-	vCube[6] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[7] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[8] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f), glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[6] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[7] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[8] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f), glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 
-	vCube[9] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[10] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[11] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[9] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[10] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[11] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 	//back
-	vCube[12] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[13] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[14] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[12] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[13] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[14] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 
-	vCube[15] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[16] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[17] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[15] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[16] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[17] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 	//right
-	vCube[18] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[19] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[20] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[18] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[19] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[20] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 
-	vCube[21] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[22] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[23] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, 0.0f), glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[21] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[22] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[23] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, 0.0f), glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 	//top
-	vCube[24] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[25] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[26] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[24] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[25] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[26] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 
-	vCube[27] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[28] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[29] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[27] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[28] = Diffuse_Vertex(glm::vec3(-0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[29] = Diffuse_Vertex(glm::vec3(0.1f, 0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 	//bottom
-	vCube[30] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[31] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[32] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[30] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[31] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[32] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 
-	vCube[33] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[34] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, -0.1f),glm::vec4(1.0f,0.0f,0.0f,1.0f));			
-	vCube[35] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec4(1.0f,0.0f,0.0f,1.0f));			
+	vCube[33] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, 0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[34] = Diffuse_Vertex(glm::vec3(0.1f, -0.1f, -0.1f),glm::vec4(0.0f,1.0f,0.8f,1.0f));			
+	vCube[35] = Diffuse_Vertex(glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec4(0.0f,1.0f,0.8f,1.0f));			
 
 	
 	glGenBuffers(1, &vertexBufferObject);

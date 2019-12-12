@@ -143,7 +143,7 @@ void Wall::Create(const GLuint& sObj,float width, float height,float depth)
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 	glBufferData(GL_ARRAY_BUFFER, vCube.size() * sizeof(UVColorVertex), &vCube, GL_STATIC_DRAW);
 
-	SetSpeed(10.0f);
+	SetSpeed(30.0f);
 	
 	shaderObject = sObj;
 
