@@ -3,8 +3,6 @@
 #include "Mesh.h"
 
 
-
-
 class Pyramid : public Mesh
 {
 
@@ -18,6 +16,8 @@ public:
 	Pyramid();
 	virtual ~Pyramid();
 	void Draw(const GLuint& sObj)final;
+	void Draw(const float& elapsedTime, const GLuint& sObj) {}
+	//void Draw(const float& elapsedTime, const GLuint & sObj, const glm::vec3& position) {}
 	void Update(const GLuint& sObj)final;
 	void SetPosition(const glm::vec3& pos);
 

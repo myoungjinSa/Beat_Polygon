@@ -2,7 +2,6 @@
 #include "Timer.h"
 
 class Camera;
-
 class Cube;
 class Crane;
 class Light;
@@ -10,6 +9,9 @@ class Pyramid;
 class Snow;
 class AlphaBlock;
 class WallManager;
+class UI;
+class UIManager;
+class GAMESOUND;
 
 class Framework
 {
@@ -32,9 +34,10 @@ public:
 	void CreateRightCube();
 	void CreateCeiling();
 	void CreateWallManager();
-
+	void CreateSound();
 	void CreateTexture();
 	void SetTexture();
+	void AddFont();
 
 	void CheckCollision();
 	void RotateCamera(bool bRot);
@@ -43,6 +46,7 @@ public:
 	void DrawLeftWall();
 	void DrawCeiling();
 	void DrawFloor();
+	void DrawFont();
 	void Draw();
 	GLvoid Reshape(int w, int h);
 	void StartDash();
@@ -50,7 +54,7 @@ public:
 public:
 
 	Camera* pCamera{ nullptr };
-
+	
 	enum class SPIN_DIR { LEFT, RIGHT } baseFloorDir;
 	enum class MIDDLE_SPIN_DIR { LEFT, RIGHT } middleFloorDir;
 	enum class TOP_SPIN_DIR { LEFT, RIGHT } topFloorDir;
@@ -63,6 +67,8 @@ public:
 	Cube** pRightCube{ nullptr };
 	Cube** pCeiling{ nullptr };
 
+	static unsigned short hitCount;
+
 
 	AlphaBlock** pBlocks{ nullptr };
 	glm::vec3 lightPos{ 2.0f, 5.2f, 1.0f };
@@ -73,8 +79,8 @@ public:
 
 	bool snowStop{ false };
 
-
-
+	std::unique_ptr<GAMESOUND> gameSound;
+	std::unique_ptr<UIManager> uiManager;
 private:
 
 	struct MapInfo 

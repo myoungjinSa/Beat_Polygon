@@ -8,11 +8,11 @@ Cube::Cube()
 {
 
 	
-	std::cout << "Cube 持失" << std::endl;
+	//std::cout << "Cube 持失" << std::endl;
 }
 Cube::~Cube()
 {
-	std::cout << "Cube 社瑚" << std::endl;
+	//std::cout << "Cube 社瑚" << std::endl;
 }
 void Cube::SetPosition(const glm::vec3& pos)
 {

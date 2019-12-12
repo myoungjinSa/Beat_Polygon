@@ -11,13 +11,16 @@ public:
 
 	void Update(const GLuint& sObj)final;
 	void Draw(const GLuint& sObj)final;
-
+	void Draw(const float& elapsedTime, const GLuint& sObj) {}
+//	void Draw(const float& elapsedTime, const GLuint & sObj, const glm::vec3& position) {  }
 	void SetRange(float range);
 	void SetPosition(const glm::vec3& pos);
 	void SetSpeed(float speed);
 	void SetWidth(float w);
 	void SetHeight(float h);
-	
+	void SetDepth(float d);
+
+	float GetDepth() { return depth; }
 	float GetWidth() { return width; }
 	float GetHeight() { return height; }
 	float GetSpeed() { return fSpeed; }
@@ -56,7 +59,7 @@ public:
 
 private:
 	
-	float width, height;
+	float width, height,depth;
 	float fSpeed;
 	float fRange{ 0.0f };
 	glm::mat4 rm = glm::mat4(1.0f);

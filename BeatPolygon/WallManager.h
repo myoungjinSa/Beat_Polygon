@@ -1,15 +1,13 @@
 #pragma once
+#include"Wall.h"
 
-#include "Wall.h"
+constexpr int blockCount = 30;
 
-
-constexpr int blockCount = 100;
-
+class Light;
 class Wall;
 
 class WallManager 
 {
-	
 	
 	std::array<Wall, blockCount> walls;
 public:
@@ -17,8 +15,11 @@ public:
 	~WallManager();
 
 
-	void Create(const GLuint& sObj);
-	void Update(float time);
-	void Draw(GLuint& sObj);
+	void Create(const GLuint& sObj,const GLuint& sParticleShaderObj);
+	void Update(const float& time,Light* pLight);
+	void Draw(const float& elapsedTime,const GLuint& sObj);
+	
 
+	volatile bool CheckCollision(Light* player, Wall* pWall);
+	void ProcessCollision(Wall& wall);
 };

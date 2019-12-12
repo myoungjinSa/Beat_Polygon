@@ -4,7 +4,7 @@
 
 
 Light::Light(Diffuse_Vertex v0,Diffuse_Vertex v1,Diffuse_Vertex v2,Diffuse_Vertex v3,Diffuse_Vertex v4,Diffuse_Vertex v5,Diffuse_Vertex v6,Diffuse_Vertex v7)
-	:v0{v0},v1{v1},v2{v2},v3{v3},v4{v4},v5{v5},v6{v6},v7{v7},fSpeed{0.0f},width{0.0f},height{0.0f}
+	:v0{v0},v1{v1},v2{v2},v3{v3},v4{v4},v5{v5},v6{v6},v7{v7},fSpeed{0.0f},width{0.0f},height{0.0f},depth{0.0f}
 {
 
 }
@@ -57,13 +57,20 @@ void Light::Update(const GLuint& sObj)
 }
 void Light::SetWidth(float w)
 {
-	width = w * 0.5f;
+	width = w ;
 }
 
 void Light::SetHeight(float h)
 {
-	height = h * 0.5f;
+	height = h;
 }
+
+void Light::SetDepth(float d)
+{
+	depth = d;
+}
+
+
 void Light::Draw(const GLuint& sObj)
 {
 	

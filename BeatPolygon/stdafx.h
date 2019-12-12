@@ -16,6 +16,7 @@
 #include <iterator>
 #include <fstream>
 #include <array>
+#include <map>
 #include <random>
 
 	// 키입력 정의

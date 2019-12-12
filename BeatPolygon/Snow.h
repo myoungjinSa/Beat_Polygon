@@ -27,6 +27,8 @@ public:
 	void Update(const GLuint& sObj)final;
 	//void Draw(const GLuint& sObj, const GLuint& vbo,const GLuint)final {}
 	void Draw(const GLuint& sObj)final;
+	void Draw(const float& elapsedTime, const GLuint& sObj) {}
+	//void Draw(const float& elapsedTime, const GLuint & sObj, const glm::vec3& position){}
 	void SetSpeed(float speed);
 	void SetPosition(const glm::vec3& pos);
 	void MoveDown(float fTimeElapsed);

@@ -11,11 +11,18 @@
 #include "Pyramid.h"
 #include "Snow.h"
 #include "AlphaBlock.h"
+#include "UI.h"
+#include "Sound.h"
+
+unsigned short Framework::hitCount{ 0 };
 
 Framework::Framework()
 {
 
 
+	uiManager = std::make_unique<UIManager>();
+
+	
 
 }
 Framework::~Framework()
@@ -117,28 +124,41 @@ void Framework::Init(int argc,char** argv)
 	InitShader();
 	CreateTexture();
 	CreateCube();
-	CreateCeiling();
+	//CreateCeiling();
+	mapInfo.upPos = 10.0f;
 	CreateRightCube();
 	CreateLeftCube();
 	CreateLight();
-//	CreateBlocks();
-//	CreatePyramid();
 	CreateSnow();
+	CreateSound();
 	CreateWallManager();
+	AddFont();
 
 	//CreateObjModel();
-	CreateCamera(glm::vec3{ pLight->GetPosition() + glm::vec3(0.0f,0.0f,17.0f)}, glm::vec3{ 0.0f,6.0f,-1.0f}, glm::vec3{ 0.0f,1.0f,0.0f });
+	CreateCamera(glm::vec3{ pLight->GetPosition() + glm::vec3(0.0f,10.0f,35.0f)}, glm::vec3{ 0.0f,10.0f,-1.0f}, glm::vec3{ 0.0f,1.0f,0.0f });
 	timer.Start();
 
+
+}
+void Framework::CreateSound()
+{
+	gameSound = std::make_unique<GAMESOUND>();
+	
+	if (gameSound)
+	{
+		gameSound->Create("../BeatPolygon/sound/WhiteChristmas.mp3");
+		gameSound->PlaySOUND(0);
+	}
 
 }
 void Framework::CreateWallManager()
 {
 	pWallManager = new WallManager{};
 
+
 	if(pWallManager)
 	{
-		pWallManager->Create(shaderProgram[2]);
+		pWallManager->Create(shaderProgram[2],shaderProgram[1]);
 
 
 	}
@@ -153,18 +173,32 @@ void Framework::CreatePyramid()
 
 
 }
+void Framework::AddFont()
+{
+	if (uiManager) 
+	{
+		uiManager->AddUI(GLUT_BITMAP_TIMES_ROMAN_24,"score :",0.0f,-0.7f);
+
+	}
+}
+
+void Framework::DrawFont()
+{
+	if (uiManager)
+		uiManager->Draw();
+}
 
 void Framework::CreateLight()
 {
 	pLight = new Light{
-		Diffuse_Vertex(glm::vec3(-0.5f, 0.5f, 0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//leftTopFront
-		Diffuse_Vertex(glm::vec3(-0.5f, -0.5f, 0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//leftBottomFront
-		Diffuse_Vertex(glm::vec3(0.5f, 0.5f, 0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//rightTopFront
-		Diffuse_Vertex(glm::vec3(0.5f, -0.5f, 0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//rightBottomFront
-		Diffuse_Vertex(glm::vec3(-0.5f, -0.5f, -0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),	//leftBottomBack
-		Diffuse_Vertex(glm::vec3(-0.5f, 0.5f, -0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//leftTopBack
-		Diffuse_Vertex(glm::vec3(0.5f, 0.5f, -0.1f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//rightTopBack
-		Diffuse_Vertex(glm::vec3(0.5f, -0.5f, -0.1f), glm::vec4(1.0f, 0.0f,0.0f,1.0f))		//rightBottomBack};
+		Diffuse_Vertex(glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//leftTopFront
+		Diffuse_Vertex(glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//leftBottomFront
+		Diffuse_Vertex(glm::vec3(0.5f, 0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//rightTopFront
+		Diffuse_Vertex(glm::vec3(0.5f, -0.5f, 0.5f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//rightBottomFront
+		Diffuse_Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),	//leftBottomBack
+		Diffuse_Vertex(glm::vec3(-0.5f, 0.5f, -0.5f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//leftTopBack
+		Diffuse_Vertex(glm::vec3(0.5f, 0.5f, -0.5f), glm::vec4(1.0f, 0.0f, 0.0f,1.0f)),		//rightTopBack
+		Diffuse_Vertex(glm::vec3(0.5f, -0.5f, -0.5f), glm::vec4(1.0f, 0.0f,0.0f,1.0f))		//rightBottomBack};
 	};
 	glGenBuffers(1, &pLight->vertexBufferObject);
 
@@ -230,10 +264,11 @@ void Framework::CreateLight()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * pLight->indexCount, &pLight->Indices[0], GL_STATIC_DRAW);
 
 	pLight->InitShader(shaderProgram[1]);
-	pLight->SetPosition(glm::vec3(0.0f, 6.0f, -5.0f));
+	pLight->SetPosition(glm::vec3(0.0f, 3.5f, -5.0f));
 	pLight->SetRange(10.0f);
 	pLight->SetSpeed(20.0f);
 	pLight->SetWidth(1.0f);
+	pLight->SetDepth(1.0f);
 	pLight->SetHeight(1.0f);
 
 }
@@ -390,8 +425,7 @@ void Framework::Update()
 		float dashPower = 1.0f;
 		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
 		pLight->position.x += moveSpeed *dashPower;
-	//	pCamera->cameraPos.x += moveSpeed * dashPower;
-	//	pCamera->cameraTarget.x += moveSpeed * dashPower;
+	
 	}
 	if(GetAsyncKeyState(VK_LEFT) & 0x8000)
 	{
@@ -399,57 +433,35 @@ void Framework::Update()
 		float dashPower = 1.0f;
 		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
 		pLight->position.x -= moveSpeed * dashPower;
-	//	pCamera->cameraPos.x -= moveSpeed * dashPower;
-	//	pCamera->cameraTarget.x -= moveSpeed * dashPower;
-	}
-	if(GetAsyncKeyState(VK_UP) & 0x8000)
-	{
-		float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
-		float dashPower = 1.0f;
-		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
-		pLight->position.y += moveSpeed * dashPower;
-		//pCamera->cameraPos.y += moveSpeed * dashPower;
-		//pCamera->cameraTarget.y += moveSpeed * dashPower;
-	}
-	if(GetAsyncKeyState(VK_DOWN) & 0x8000)
-	{
-		float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
-		float dashPower = 1.0f;
-		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
-		pLight->position.y -= moveSpeed * dashPower;
-		//pCamera->cameraPos.y -= moveSpeed * dashPower;
-		//pCamera->cameraTarget.y -= moveSpeed * dashPower;
+
 	}
 
+
 	CheckCollision();
-	//std::cout << keyCombination << std::endl;
+	
 }
 
 void Framework::CheckCollision()
 {
+	
 	if(pLight->position.x - pLight->GetWidth() <= mapInfo.leftPos  )
 	{
 		pLight->position.x = mapInfo.leftPos + pLight->GetWidth();
-		//pCamera->cameraPos.x = mapInfo.leftPos + pLight->GetWidth();
-		//pCamera->cameraTarget.x = mapInfo.leftPos + pLight->GetWidth();
 	}
 	if(pLight->position.x + pLight->GetWidth() >= mapInfo.rightPos)
 	{
 		pLight->position.x = mapInfo.rightPos - pLight->GetWidth();
-		//pCamera->cameraPos.x = mapInfo.rightPos - pLight->GetWidth();
-		//pCamera->cameraTarget.x = mapInfo.rightPos - pLight->GetWidth();
+		
 	}
 	if(pLight->position.y - pLight->GetHeight()<= mapInfo.downPos)
 	{
 		pLight->position.y = mapInfo.downPos + pLight->GetHeight();
-		//pCamera->cameraPos.y = mapInfo.downPos + pLight->GetHeight();
-		//pCamera->cameraTarget.y = mapInfo.downPos + pLight->GetHeight();
+		
 	}
 	if(pLight->position.y + pLight->GetHeight()>= mapInfo.upPos)
 	{
 		pLight->position.y = mapInfo.upPos - pLight->GetHeight();
-		//pCamera->cameraPos.y = mapInfo.upPos - pLight->GetHeight();
-		//pCamera->cameraTarget.y = mapInfo.upPos - pLight->GetHeight();
+		
 	}
 
 
@@ -470,7 +482,7 @@ void Framework::Draw()
 	DrawLeftWall();
 	DrawRightWall();
 	DrawFloor();
-	DrawCeiling();
+	//DrawCeiling();
 	
 	if (pCamera) {
 
@@ -504,21 +516,14 @@ void Framework::Draw()
 	glUseProgram(shaderProgram[2]);
 
 	
-	//if (pPyramid)
-	//{
-	//	pPyramid->Draw(shaderProgram[2]);
-	//}
-	//if(pBlocks)
-	//{
-	//	for(int i =0;i<blockCount;++i)
-	//	{
-	//		pBlocks[i]->Draw(shaderProgram[2]);
-	//	}
-	//}
+
 	if(pWallManager)
 	{
-		pWallManager->Update(timer.GetTimeElapsed());
-		pWallManager->Draw(shaderProgram[2]);
+		if (pLight)
+		{
+			pWallManager->Update(timer.GetTimeElapsed(), pLight);
+			pWallManager->Draw(timer.GetTimeElapsed(),shaderProgram[2]);
+		}
 	}
 
 	if (pCamera)
@@ -527,10 +532,17 @@ void Framework::Draw()
 		if(pLight)
 			pLight->Draw(shaderProgram[2]);
 	}
+
+
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	//셰이더 프로그램 사용 중지
 	glUseProgram(0);
+	if (uiManager)
+	{
+		uiManager->Modify("score :", std::string("score :") + std::to_string(hitCount));
+		uiManager->Draw();
+	}
 }
 
 bool Framework::CheckProgram(GLuint program)
@@ -606,6 +618,9 @@ void Framework::CreateSnow()
 
 	
 }
+
+
+
 void Framework::RotateCamera(bool bRot)
 {
 	if(pCamera)
@@ -726,7 +741,7 @@ void Framework::CreateCube()
 			glBindBuffer(GL_ARRAY_BUFFER, pCube[i]->vertexBufferObject);
 			glBufferData(GL_ARRAY_BUFFER, pCube[i]->vCube.size() * sizeof(UVVertex), &pCube[i]->vCube, GL_STATIC_DRAW);
 
-			pCube[i]->CreateTexture(shaderProgram[0],"ice3.png");
+			pCube[i]->CreateTexture(shaderProgram[0],"ice4.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			pCube[i]->SetPosition(glm::vec3(0.0f, 0.0f, (-30.0f*i)));
 			mapInfo.downPos = 0.2f;
@@ -813,10 +828,10 @@ void Framework::CreateCeiling()
 			glBindBuffer(GL_ARRAY_BUFFER, pCeiling[i]->vertexBufferObject);
 			glBufferData(GL_ARRAY_BUFFER, pCeiling[i]->vCube.size() * sizeof(UVVertex), &pCeiling[i]->vCube, GL_STATIC_DRAW);
 
-			pCeiling[i]->CreateTexture(shaderProgram[0],"ice3.png");
+			pCeiling[i]->CreateTexture(shaderProgram[0],"ice4.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			pCeiling[i]->SetPosition(glm::vec3(0.0f, 0.0f, (-30.0f*i)));
-			mapInfo.upPos = 10.0f;
+			
 		}
 
 
@@ -900,7 +915,7 @@ void Framework::CreateRightCube()
 			glBindBuffer(GL_ARRAY_BUFFER, pRightCube[i]->vertexBufferObject);
 			glBufferData(GL_ARRAY_BUFFER, pRightCube[i]->vCube.size() * sizeof(UVVertex), &pRightCube[i]->vCube, GL_STATIC_DRAW);
 
-			pRightCube[i]->CreateTexture(shaderProgram[0],"ice1.png");
+			pRightCube[i]->CreateTexture(shaderProgram[0],"ice4.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			pRightCube[i]->SetPosition(glm::vec3(15.0f, 0.0f, (-30.0f * i)));
 			mapInfo.rightPos = 14.0f;
@@ -986,7 +1001,7 @@ void Framework::CreateLeftCube()
 			glBindBuffer(GL_ARRAY_BUFFER, pLeftCube[i]->vertexBufferObject);
 			glBufferData(GL_ARRAY_BUFFER, pLeftCube[i]->vCube.size() * sizeof(UVVertex), &pLeftCube[i]->vCube, GL_STATIC_DRAW);
 
-			pLeftCube[i]->CreateTexture(shaderProgram[0],"ice3.png");
+			pLeftCube[i]->CreateTexture(shaderProgram[0],"ice4.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			
 			pLeftCube[i]->SetPosition(glm::vec3(-15.0f, 0.0f, (-30.0f * i)));

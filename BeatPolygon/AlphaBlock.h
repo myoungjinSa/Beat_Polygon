@@ -21,6 +21,8 @@ public:
 	void InitShader(GLuint shaderObj);
 	void Update(const GLuint &sObj);
 	void Draw(const GLuint & sObj);
+	void Draw(const float& elapsedTime, const GLuint& sObj) {}
+//	void Draw(const float& elapsedTime, const GLuint & sObj, const glm::vec3& position) {}
 	void CreateTexture(GLuint sObj);
 	void Create(GLuint sObj);
 	void SetID(int i) { id = i; }
