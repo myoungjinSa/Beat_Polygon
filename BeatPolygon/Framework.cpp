@@ -13,6 +13,7 @@
 #include "AlphaBlock.h"
 #include "UI.h"
 #include "Sound.h"
+#include "ScreenEffect.h"
 
 unsigned short Framework::hitCount{ 0 };
 
@@ -140,6 +141,7 @@ void Framework::Init(int argc,char** argv)
 	CreateLight();
 	CreateSnow();
 	CreateSound();
+	CreateScreenEffect();
 	CreateWallManager();
 	AddFont();
 
@@ -150,13 +152,24 @@ void Framework::Init(int argc,char** argv)
 	
 	
 }
+void Framework::CreateScreenEffect()
+{
+	screenEffect = std::make_unique<ScreenEffect>();
+
+	if(screenEffect)
+	{
+		screenEffect->Create(shaderProgram[3]);
+
+	}
+
+}
 void Framework::CreateSound()
 {
 	gameSound = std::make_unique<GAMESOUND>();
 	
 	if (gameSound)
 	{
-		gameSound->Create("../BeatPolygon/sound/piano32.mp3");
+		gameSound->Create("../BeatPolygon/sound/piano3.mp3");
 		
 	}
 
@@ -192,7 +205,7 @@ void Framework::AddFont()
 {
 	if (uiManager) 
 	{
-		uiManager->AddUI(GLUT_BITMAP_TIMES_ROMAN_24,"score :",0.0f,0.7f);
+		uiManager->AddUI(GLUT_BITMAP_TIMES_ROMAN_24,"HIT : ",-0.05f,0.2f);
 
 	}
 }
@@ -299,7 +312,7 @@ bool Framework::InitShader()
 	glFrontFace(GL_CCW);
 	
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < shaderCount; ++i)
 	{
 		std::string vertexShaderSource{};
 		std::string fragShaderSource{};
@@ -321,7 +334,7 @@ bool Framework::InitShader()
 			glBindAttribLocation(shaderProgram[i], 0, "vPos");
 			glBindAttribLocation(shaderProgram[i], 1, "vColor");
 		}
-		else
+		else if(i == 2)
 		{
 			vertexShaderSource = ReadStringFromFile("alphaVertexShader.glvs");
 			fragShaderSource = ReadStringFromFile("alphaFragmentShader.glfs");
@@ -329,6 +342,12 @@ bool Framework::InitShader()
 			glBindAttribLocation(shaderProgram[i], 1, "vColor");
 			glBindAttribLocation(shaderProgram[i], 2, "vNormal");
 			glBindAttribLocation(shaderProgram[i], 3, "vUV");
+		}
+		else if(i == 3)
+		{
+			vertexShaderSource = ReadStringFromFile("screenVertexShader.glvs");
+			fragShaderSource = ReadStringFromFile("screenFragmentShader.glfs");
+			
 		}
 		GLuint vertShaderObj = CreateShader(GL_VERTEX_SHADER, vertexShaderSource);
 		GLuint fragShaderObj = CreateShader(GL_FRAGMENT_SHADER, fragShaderSource);
@@ -537,8 +556,12 @@ void Framework::Draw()
 		}
 
 	}
+
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+
 	glUseProgram(shaderProgram[2]);
 
 	
@@ -549,7 +572,7 @@ void Framework::Draw()
 		{
 			if (gameSound->musicStart)
 			{
-				pWallManager->Update(timer.GetTimeElapsed(), pLight);
+				pWallManager->Update(timer.GetTimeElapsed(), pLight,gameSound);
 				pWallManager->Draw(timer.GetTimeElapsed(), shaderProgram[2]);
 			}
 		}
@@ -561,17 +584,29 @@ void Framework::Draw()
 		if(pLight)
 			pLight->Draw(shaderProgram[2]);
 	}
-
-
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
 	//셰이더 프로그램 사용 중지
 	glUseProgram(0);
 	if (uiManager)
 	{
-		uiManager->Modify("score :", std::string("score :") + std::to_string(hitCount));
+		uiManager->Modify("HIT : ", std::string("HIT : ") + std::to_string(hitCount));
 		uiManager->Draw();
 	}
+
+	glUseProgram(shaderProgram[3]);
+	if (screenEffect)
+	{
+		screenEffect->Draw(shaderProgram[3]);
+	}
+
+	//셰이더 프로그램 사용 중지
+	glUseProgram(0);
+	
+
+
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+
+
 }
 
 bool Framework::CheckProgram(GLuint program)

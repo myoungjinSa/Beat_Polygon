@@ -3,6 +3,7 @@
 #include "Framework.h"
 #include "Light.h"
 #include "Timer.h"
+#include "Sound.h"
 #include <string>
 
 
@@ -42,7 +43,7 @@ void WallManager::Create(const GLuint& sObj,const GLuint& sParticleShaderObj)
 #ifndef WRITE_MUSIC
 void WallManager::ReadMusicFile()
 {
-	in.open("music.txt");
+	in.open("piano.txt");
 
 
 	if(in.is_open())
@@ -77,7 +78,7 @@ void WallManager::ReadMusicFile()
 void WallManager::OpenMusicFile()
 {
 
-	fp.open("music.txt");
+	fp.open("piano.txt");
 	
 
 	
@@ -111,7 +112,7 @@ void WallManager::CloseMusicFile()
 	}
 }
 #endif
-void WallManager::Update(const float& time, Light* player)
+void WallManager::Update(const float& time, Light* player,const std::unique_ptr<GAMESOUND>& uniqueSound)
 {
 	
 	std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();
@@ -133,6 +134,8 @@ void WallManager::Update(const float& time, Light* player)
 		
 	}
 #endif
+
+	static bool isHit{ false };
 	for (int i = 0; i < blockCount; ++i)
 	{
 		if (walls[i].b_Active == true)
@@ -140,12 +143,29 @@ void WallManager::Update(const float& time, Light* player)
 			walls[i].Move(time);
 			if (CheckCollision(player, &walls[i]))
 			{
-
+				isHit = true;
 				ProcessCollision(walls[i]);
 			}
+			if (walls[i].GetPosition().z >= 1.0f)
+			{
+				walls[i].b_Active = false;
+				isHit = false;
+			}
+		
 		}
 
 	}
+#ifndef WRITE_MUSIC
+	if(isHit)
+	{
+		uniqueSound->SetVolume(0, 1.0f);
+	}
+	else
+	{
+		uniqueSound->SetVolume(0, 0.0f);
+	}
+#endif
+
 
 }
 
@@ -157,7 +177,7 @@ void WallManager::ProcessCollision(Wall& wall)
 		wall.SaveExplosionPos(wall.GetPosition());
 		wall.b_Blowing = true;
 		Framework::hitCount += 1;
-
+		wall.b_Active = false;
 	}
 	
 }

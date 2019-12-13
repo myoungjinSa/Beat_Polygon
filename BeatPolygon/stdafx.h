@@ -49,7 +49,7 @@ public:
 public:
 	Diffuse_Vertex() = default;
 	Diffuse_Vertex(glm::vec3 vec, glm::vec4 color) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, r{ color.x }, g{ color.y }, b{ color.z }, a{ color.a }{};
-
+	~Diffuse_Vertex() = default;
 };
 
 class Normal_Vertex
@@ -68,9 +68,29 @@ public:
 public:
 	Normal_Vertex() = default;
 	Normal_Vertex(glm::vec3 vec, glm::vec4 color, glm::vec3 normal) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, r{ color.x }, g{ color.y }, b{ color.z }, a{ color.a }, nx{normal.x},ny{normal.y},nz{normal.z} {};
-
+	~Normal_Vertex() = default;
 };
 
+class UVAlphaVertex
+{
+public:
+	float fx;
+	float fy;
+	float fz;
+	float r;
+	float g;
+	float b;
+	float a;
+	float fu;
+	float fv;
+
+public:
+	UVAlphaVertex() = default;
+	UVAlphaVertex(glm::vec3 vec,glm::vec4 color,glm::vec2 uv )
+		: fx{vec.x},fy{vec.y},fz{vec.z},r{color.r},g{color.g},b{color.b},a{color.a},fu{uv.x},fv{uv.y}
+	{}
+	~UVAlphaVertex() = default;
+};
 
 class UVVertex
 {
@@ -86,7 +106,7 @@ public:
 public:
 	UVVertex() = default;
 	UVVertex(glm::vec3 vec, glm::vec3 normal, glm::vec2 uv) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, nx{ normal.x }, ny{ normal.y }, nz{ normal.z }, fu{ uv.x }, fv{ uv.y } {};
-
+	~UVVertex() = default;
 };
 
 class UVColorVertex
@@ -108,7 +128,7 @@ public:
 	UVColorVertex() = default;
 	UVColorVertex(glm::vec3 vec, glm::vec4 col, glm::vec3 normal, glm::vec2 uv) 
 		:fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, fr{ col.r }, fg{ col.g }, fb{ col.b }, fa{ col.a }, nx{ normal.x }, ny{ normal.y }, nz{ normal.z }, fu{ uv.x }, fv{ uv.y } {};
-
+	~UVColorVertex() = default;
 };
 
 

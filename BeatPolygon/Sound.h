@@ -25,7 +25,7 @@ public:
 
 	}
 	void Create(const char* filePath);
-	
+	void SetVolume(long type,float volume);
 
 	void PlaySOUND(long Type);
 	~GAMESOUND();

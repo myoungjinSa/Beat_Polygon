@@ -57,6 +57,9 @@
     <ClCompile Include="Sound.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenEffect.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlphaBlock.h">
@@ -107,6 +110,9 @@
     <ClInclude Include="Sound.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ScreenEffect.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="alphaFragmentShader.glfs" />
@@ -115,6 +121,8 @@
     <None Include="lightFs.glfs" />
     <None Include="lightVs.glvs" />
     <None Include="vertexShader.glvs" />
+    <None Include="screenVertexShader.glvs" />
+    <None Include="screenFragmentShader.glfs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="ice1.png">
@@ -124,6 +132,9 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="ice3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="iceScreen.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

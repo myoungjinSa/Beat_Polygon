@@ -170,6 +170,7 @@ void Wall::SetSpeed(float speed)
 }
 void Wall::Move(float time)
 {
+
 	position.z += fSpeed * time;
 
 	SetPosition(position);
@@ -233,45 +234,49 @@ void Wall::Draw(const float& elapsedTime,const GLuint& sObj)
 		{
 			aParticles[i].Draw(elapsedTime,sObj);
 		}
+
 	}
 	else
 	{
-		glUseProgram(shaderObject);
-		Update(sObj);
+		if (b_Active)
+		{
+			glUseProgram(shaderObject);
+			Update(sObj);
 
 
-		int attribPos = glGetAttribLocation(sObj, "vPos");
-		int attribCol = glGetAttribLocation(sObj, "vColor");
-		int attribNorm = glGetAttribLocation(sObj, "vNormal");
-		int attribUV = glGetAttribLocation(sObj, "vUV");
+			int attribPos = glGetAttribLocation(sObj, "vPos");
+			int attribCol = glGetAttribLocation(sObj, "vColor");
+			int attribNorm = glGetAttribLocation(sObj, "vNormal");
+			int attribUV = glGetAttribLocation(sObj, "vUV");
 
-		glEnableVertexAttribArray(attribPos);
-		glEnableVertexAttribArray(attribCol);
-		glEnableVertexAttribArray(attribNorm);
-		glEnableVertexAttribArray(attribUV);
+			glEnableVertexAttribArray(attribPos);
+			glEnableVertexAttribArray(attribCol);
+			glEnableVertexAttribArray(attribNorm);
+			glEnableVertexAttribArray(attribUV);
 
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-
-
-
-		glVertexAttribPointer(attribPos, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), nullptr);
-		glVertexAttribPointer(attribCol, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
-		glVertexAttribPointer(attribNorm, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(7 * sizeof(float)));
-		glVertexAttribPointer(attribUV, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(10 * sizeof(float)));
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 
 
-		glDisableVertexAttribArray(attribPos);
-		glDisableVertexAttribArray(attribCol);
-		glDisableVertexAttribArray(attribNorm);
-		glDisableVertexAttribArray(attribUV);
+
+			glVertexAttribPointer(attribPos, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), nullptr);
+			glVertexAttribPointer(attribCol, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
+			glVertexAttribPointer(attribNorm, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(7 * sizeof(float)));
+			glVertexAttribPointer(attribUV, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(10 * sizeof(float)));
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texture1);
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glDisableVertexAttribArray(attribPos);
+			glDisableVertexAttribArray(attribCol);
+			glDisableVertexAttribArray(attribNorm);
+			glDisableVertexAttribArray(attribUV);
+
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		}
 	}
 
 }

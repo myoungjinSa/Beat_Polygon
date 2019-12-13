@@ -12,6 +12,10 @@ class WallManager;
 class UI;
 class UIManager;
 class GAMESOUND;
+class ScreenEffect;
+
+constexpr int shaderCount = 4;
+
 
 class Framework
 {
@@ -35,6 +39,7 @@ public:
 	void CreateCeiling();
 	void CreateWallManager();
 	void CreateSound();
+	void CreateScreenEffect();
 	void CreateTexture();
 	void SetTexture();
 	void AddFont();
@@ -75,10 +80,12 @@ public:
 	Pyramid* pPyramid{ nullptr };
 	Light* pLight{ nullptr };
 	Timer timer;
+	
 	GLuint GetShaderProgram(int i) { return shaderProgram[i]; }
 
 	bool snowStop{ false };
 	WallManager* pWallManager{ nullptr };
+	std::unique_ptr<ScreenEffect> screenEffect;
 	std::unique_ptr<GAMESOUND> gameSound;
 	std::unique_ptr<UIManager> uiManager;
 private:
@@ -95,8 +102,9 @@ private:
 
 	GLuint sampler;
 	GLuint texture1;
-	GLuint shaderProgram[3];
+	GLuint shaderProgram[shaderCount];
 
+	
 	unsigned short keyCombination{0};
 	
 
@@ -104,6 +112,6 @@ private:
 	bool bMiddleRotate{ false };
 	
 	const int cubeCount{ 10 };
-	int fWindowWidth{ 800 };
-	int fWindowHeight{ 600 };
+	int fWindowWidth{ 1200 };
+	int fWindowHeight{ 720 };
 };

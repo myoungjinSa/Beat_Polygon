@@ -4,7 +4,7 @@
  
 class Light;
 class Wall;
-
+class GAMESOUND;
 class WallManager 
 {
 	
@@ -29,7 +29,7 @@ public:
 	void ReadMusicFile();
 #endif
 	void Create(const GLuint& sObj,const GLuint& sParticleShaderObj);
-	void Update(const float& time,Light* pLight);
+	void Update(const float& time,Light* pLight,const std::unique_ptr<GAMESOUND>& uniqueSound);
 	void Draw(const float& elapsedTime,const GLuint& sObj);
 	
 

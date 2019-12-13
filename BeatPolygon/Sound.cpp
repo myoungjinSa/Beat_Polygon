@@ -27,3 +27,8 @@ void GAMESOUND::Create(const char* filePath)
 
 }
 
+void GAMESOUND::SetVolume(long type,float volume)
+{
+	FMOD_Channel_SetVolume(channel[type], volume);
+}
+

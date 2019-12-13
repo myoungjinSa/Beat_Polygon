@@ -27,6 +27,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particles.cpp" />
     <ClCompile Include="Pyramid.cpp" />
+    <ClCompile Include="ScreenEffect.cpp" />
     <ClCompile Include="Snow.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -43,6 +44,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Particles.h" />
     <ClInclude Include="Pyramid.h" />
+    <ClInclude Include="ScreenEffect.h" />
     <ClInclude Include="Snow.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="stb_image.h" />
@@ -58,12 +60,15 @@
     <None Include="fragment.glfs" />
     <None Include="lightFs.glfs" />
     <None Include="lightVs.glvs" />
+    <None Include="screenFragmentShader.glfs" />
+    <None Include="screenVertexShader.glvs" />
     <None Include="vertexShader.glvs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="ice1.png" />
     <Image Include="ice2.png" />
     <Image Include="ice3.png" />
+    <Image Include="iceScreen.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
