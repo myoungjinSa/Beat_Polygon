@@ -17,7 +17,7 @@ public:
 
 	Particle();
 	virtual ~Particle();
-	void Create(GLuint sObj,const glm::vec3& movingDir);
+	void Create(GLuint sObj,const glm::vec3& movingDir,glm::vec3 color);
 	void InitShader(GLuint shaderObj);
 	void Update(const GLuint& sObj) {}
 	void UpdatePos(const float& elapsedTime,const GLuint &sObj);

@@ -150,6 +150,8 @@ void WallManager::Update(const float& time, Light* player,const std::unique_ptr<
 			{
 				walls[i].b_Active = false;
 				isHit = false;
+				Framework::combo = 0;
+
 			}
 		
 		}
@@ -177,6 +179,7 @@ void WallManager::ProcessCollision(Wall& wall)
 		wall.SaveExplosionPos(wall.GetPosition());
 		wall.b_Blowing = true;
 		Framework::hitCount += 1;
+		Framework::combo += 1;
 		wall.b_Active = false;
 	}
 	

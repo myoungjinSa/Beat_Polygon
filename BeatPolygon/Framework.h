@@ -43,6 +43,8 @@ public:
 	void CreateTexture();
 	void SetTexture();
 	void AddFont();
+	void ChangeGameState(bool isStart);
+	
 
 	void CheckCollision();
 	void RotateCamera(bool bRot);
@@ -56,13 +58,15 @@ public:
 	GLvoid Reshape(int w, int h);
 	void StartDash();
 	void EndDash();
+
+	int GetScreenWidth() { return fWindowWidth; }
+	int GetScreenHeight() { return fWindowHeight; }
+
 public:
 
 	Camera* pCamera{ nullptr };
 	
-	enum class SPIN_DIR { LEFT, RIGHT } baseFloorDir;
-	enum class MIDDLE_SPIN_DIR { LEFT, RIGHT } middleFloorDir;
-	enum class TOP_SPIN_DIR { LEFT, RIGHT } topFloorDir;
+	enum class GAME_STATE { INTRO, INGAME } gameState;
 
 	const int blockCount = 5;
 	const int snowCount = 100;
@@ -73,6 +77,7 @@ public:
 	Cube** pCeiling{ nullptr };
 
 	static unsigned short hitCount;
+	static unsigned short combo;
 
 
 	AlphaBlock** pBlocks{ nullptr };

@@ -14,7 +14,7 @@ ScreenEffect::~ScreenEffect()
 }
 
 
-void ScreenEffect::Create(const GLuint& sObj)
+void ScreenEffect::Create(const GLuint& sObj,const char* image,const char* image2)
 {
 	aSquare[0] = UVAlphaVertex(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f));
 	aSquare[1] = UVAlphaVertex(glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
@@ -30,7 +30,8 @@ void ScreenEffect::Create(const GLuint& sObj)
 	glBufferData(GL_ARRAY_BUFFER, aSquare.size() * sizeof(UVAlphaVertex), &aSquare, GL_STATIC_DRAW);
 
 	shaderObject = sObj;
-	CreateTexture(sObj,"iceScreen.png");
+	CreateTexture(sObj,image,image2);
+
 }
 
 void ScreenEffect::Update(const GLuint& sObj)
@@ -57,9 +58,17 @@ void ScreenEffect::Draw(const GLuint& sObj)
 	glVertexAttribPointer(attribCol, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
 	glVertexAttribPointer(attribUV, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
 	
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	
+	if (isGameStart)
+	{
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture[0]);
+	}
+	else
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture[1]);
+	}
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -69,8 +78,11 @@ void ScreenEffect::Draw(const GLuint& sObj)
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-
-void ScreenEffect::CreateTexture(GLuint sObj,const char* textureName)
+void ScreenEffect::IsGameStart(bool isStart)
+{
+	isGameStart = isStart;
+}
+void ScreenEffect::CreateTexture(GLuint sObj,const char* texture1,const char* texture2)
 {
 	glGenSamplers(1, &sampler);
 	glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -83,20 +95,40 @@ void ScreenEffect::CreateTexture(GLuint sObj,const char* textureName)
 	stbi_set_flip_vertically_on_load(true); 
 	int widthImage, heightImage, numberOfChannel;
 
-	
+	unsigned char** data = new unsigned char*[2];
+
+	if (data) {
+		for (int i = 0 ; i<2 ;++i)
+		{
+			data[i] = new unsigned char;
+		}
+	}
 
 	//텍스쳐 이름 생성
-	glGenTextures(1, &texture);
+	glGenTextures(1, &texture[0]);
 	
 	//이제 GL_TEXTURE_2D 바인딩 포인트를 사용하여 콘텍스트에 바인딩 한다.
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	unsigned char* data = stbi_load(textureName, &widthImage, &heightImage, &numberOfChannel,0);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImage, heightImage, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	data[0] = stbi_load(texture1, &widthImage, &heightImage, &numberOfChannel,0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImage, heightImage, 0, GL_RGBA, GL_UNSIGNED_BYTE, data[0]);
+
+
+	glGenTextures(2, &texture[1]);
+		//이제 GL_TEXTURE_2D 바인딩 포인트를 사용하여 콘텍스트에 바인딩 한다.
+	glBindTexture(GL_TEXTURE_2D, texture[1]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+	data[1] = stbi_load(texture2, &widthImage, &heightImage, &numberOfChannel,0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImage, heightImage, 0, GL_RGBA, GL_UNSIGNED_BYTE, data[1]);
+
 
 	int tLocation_1 = glGetUniformLocation(sObj, "sampler"); 
 	glUniform1i (tLocation_1, 0); 

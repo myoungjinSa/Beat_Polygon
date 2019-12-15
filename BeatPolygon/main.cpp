@@ -128,7 +128,14 @@ void ProcessMouseEvent(int button,int state,int x,int y)
 	
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		
+	
+		if (framework.gameState == Framework::GAME_STATE::INTRO)
+		{
+			if (x >= 492 && y >= 630 && x <= 730 && y <= 680)
+			{
+				framework.ChangeGameState(true);
+			}
+		}
 	}
 	else if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
 	{

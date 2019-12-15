@@ -4,9 +4,11 @@
 #include "Wall.h"
 
 Wall::Wall()
-	:width{0.0f},height{0.0f}
+	:width{0.0f},height{0.0f},
+	aColors{ glm::vec3{0.0f,1.0f,0.8f},glm::vec3{0.1f,1.0f,0.9f},glm::vec3{0.0f,1.0f,0.7f},
+			glm::vec3{0.0f,1.0f,1.0f}}
 {
-
+	
 }
 
 Wall::~Wall()
@@ -52,9 +54,10 @@ void Wall::InitParticleShader(const GLuint& shader)
 }
 void Wall::CreateParticles()
 {
+	int num = rand() % 4;
 	for(int i =0;i<particleCount;++i)
 	{
-		aParticles[i].Create(particleShaderObject,glm::vec3(Random(-1.0f,1.0f),Random(-1.0f,1.0f),Random(-1.0f,1.0f)));
+		aParticles[i].Create(particleShaderObject,glm::vec3(Random(-1.0f,1.0f),Random(-1.0f,1.0f),Random(-1.0f,1.0f)),aColors[num]);
 	}
 }
 
@@ -201,7 +204,7 @@ void Wall::CreateTexture(const GLuint& sObj)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	unsigned char* data = stbi_load("ice1.png", &widthImage, &heightImage, &numberOfChannel,0);
+	unsigned char* data = stbi_load("ice3.png", &widthImage, &heightImage, &numberOfChannel,0);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImage, heightImage, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	int tLocation_1 = glGetUniformLocation(sObj, "texture1"); 

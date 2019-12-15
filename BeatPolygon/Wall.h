@@ -43,6 +43,7 @@ public:
 	bool b_Blowing{ false };
 	bool b_Active{ false };
 private:
+	std::array<glm::vec3, 4> aColors;
 	std::array<UVColorVertex, 36> vCube;
 	std::array<Particle, particleCount> aParticles;
 

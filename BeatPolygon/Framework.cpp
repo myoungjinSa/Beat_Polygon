@@ -16,6 +16,7 @@
 #include "ScreenEffect.h"
 
 unsigned short Framework::hitCount{ 0 };
+unsigned short Framework::combo{ 0 };
 
 Framework::Framework()
 {
@@ -145,6 +146,8 @@ void Framework::Init(int argc,char** argv)
 	CreateWallManager();
 	AddFont();
 
+	gameState = GAME_STATE::INTRO;
+
 	//CreateObjModel();
 	CreateCamera(glm::vec3{ pLight->GetPosition() + glm::vec3(0.0f,10.0f,35.0f)}, glm::vec3{ 0.0f,10.0f,-1.0f}, glm::vec3{ 0.0f,1.0f,0.0f });
 	timer.Start();
@@ -158,7 +161,8 @@ void Framework::CreateScreenEffect()
 
 	if(screenEffect)
 	{
-		screenEffect->Create(shaderProgram[3]);
+		
+		screenEffect->Create(shaderProgram[3],"christmas.png","Intro.png");
 
 	}
 
@@ -206,6 +210,7 @@ void Framework::AddFont()
 	if (uiManager) 
 	{
 		uiManager->AddUI(GLUT_BITMAP_TIMES_ROMAN_24,"HIT : ",-0.05f,0.2f);
+		uiManager->AddUI(GLUT_BITMAP_TIMES_ROMAN_24, "COMBO : ", -0.05F, 0.1f);
 
 	}
 }
@@ -448,40 +453,42 @@ void Framework::EndDash()
 void Framework::Update()
 {
 	
-	if(GetAsyncKeyState(VK_LSHIFT) & 0x8000)
+	if (gameState == GAME_STATE::INGAME)
 	{
-		if (pLight->bDash == false)
-			StartDash();
+		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
+		{
+			if (pLight->bDash == false)
+				StartDash();
+		}
+		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		{
+			float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
+			float dashPower = 1.0f;
+			(pLight->bDash) ? dashPower = 8.0f : dashPower = 1.0f;
+			pLight->position.x += moveSpeed * dashPower;
+
+		}
+		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		{
+			float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
+			float dashPower = 1.0f;
+			(pLight->bDash) ? dashPower = 8.0f : dashPower = 1.0f;
+			pLight->position.x -= moveSpeed * dashPower;
+
+		}
+
+
+		if (gameSound->musicStart == false && gameSound)
+		{
+			gameSound->PlaySOUND(0);
+			Timer::musicStartTime = std::chrono::steady_clock::now();
+			gameSound->musicStart = true;
+
+		}
+
+
+		CheckCollision();
 	}
-	if(GetAsyncKeyState(VK_RIGHT) & 0x8000)
-	{
-		float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
-		float dashPower = 1.0f;
-		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
-		pLight->position.x += moveSpeed *dashPower;
-	
-	}
-	if(GetAsyncKeyState(VK_LEFT) & 0x8000)
-	{
-		float moveSpeed = pLight->GetSpeed() * timer.GetTimeElapsed();
-		float dashPower = 1.0f;
-		(pLight->bDash) ? dashPower = 7.0f : dashPower = 1.0f ;
-		pLight->position.x -= moveSpeed * dashPower;
-
-	}
-
-
-	if(gameSound->musicStart == false && gameSound)
-	{
-		gameSound->PlaySOUND(0);
-		Timer::musicStartTime = std::chrono::steady_clock::now();
-		gameSound->musicStart = true;
-
-	}
-	
-
-	CheckCollision();
-	
 }
 
 void Framework::CheckCollision()
@@ -519,83 +526,109 @@ void Framework::Draw()
 
 	Update();
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glEnable(GL_DEPTH_TEST);
-	
-	glUseProgram(shaderProgram[0]);
-	DrawLeftWall();
-	DrawRightWall();
-	DrawFloor();
-	//DrawCeiling();
-	
-	if (pCamera) {
+	switch (gameState)
+	{
+	case GAME_STATE::INGAME:
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glEnable(GL_DEPTH_TEST);
 
-		if (pLight)
-		{
-			pCamera->Update(shaderProgram[0], fWindowWidth, fWindowHeight);
+		glUseProgram(shaderProgram[0]);
+		DrawLeftWall();
+		DrawRightWall();
+		DrawFloor();
+		//DrawCeiling();
 
-			SetTexture();
-			if(pSnow)
+		if (pCamera) {
+
+			if (pLight)
 			{
-				for (int i = 0; i < snowCount; ++i)
+				pCamera->Update(shaderProgram[0], fWindowWidth, fWindowHeight);
+
+				SetTexture();
+				if (pSnow)
 				{
-					if(snowStop==false)
-						pSnow[i]->MoveDown(timer.GetTimeElapsed());
-					pSnow[i]->Draw(shaderProgram[0]);
+					for (int i = 0; i < snowCount; ++i)
+					{
+						if (snowStop == false)
+							pSnow[i]->MoveDown(timer.GetTimeElapsed());
+						pSnow[i]->Draw(shaderProgram[0]);
+					}
+				}
+				glBindTexture(GL_TEXTURE_2D, 0);
+
+				pLight->Draw(shaderProgram[0]);
+
+
+				pCamera->Update(shaderProgram[1], fWindowWidth, fWindowHeight);
+
+
+			}
+
+		}
+
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+		glUseProgram(shaderProgram[2]);
+
+
+
+		if (pWallManager)
+		{
+			if (pLight)
+			{
+				if (gameSound->musicStart)
+				{
+					pWallManager->Update(timer.GetTimeElapsed(), pLight, gameSound);
+					pWallManager->Draw(timer.GetTimeElapsed(), shaderProgram[2]);
 				}
 			}
-			glBindTexture(GL_TEXTURE_2D, 0);
-
-			pLight->Draw(shaderProgram[0]);
-	
-
-			pCamera->Update(shaderProgram[1], fWindowWidth, fWindowHeight);
-			
-			
 		}
 
-	}
-
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-
-	glUseProgram(shaderProgram[2]);
-
-	
-
-	if(pWallManager)
-	{
-		if (pLight)
+		if (pCamera)
 		{
-			if (gameSound->musicStart)
-			{
-				pWallManager->Update(timer.GetTimeElapsed(), pLight,gameSound);
-				pWallManager->Draw(timer.GetTimeElapsed(), shaderProgram[2]);
-			}
+			pCamera->Update(shaderProgram[2], fWindowWidth, fWindowHeight);
+			if (pLight)
+				pLight->Draw(shaderProgram[2]);
 		}
-	}
+		//셰이더 프로그램 사용 중지
+		glUseProgram(0);
+		if (uiManager)
+		{
+			uiManager->Modify("HIT : ", std::string("HIT : ") + std::to_string(hitCount));
+			uiManager->Modify("COMBO : ", std::string("COMBO : ") + std::to_string(combo));
+			uiManager->Draw();
+		}
 
-	if (pCamera)
-	{
-		pCamera->Update(shaderProgram[2], fWindowWidth, fWindowHeight);
-		if(pLight)
-			pLight->Draw(shaderProgram[2]);
-	}
-	//셰이더 프로그램 사용 중지
-	glUseProgram(0);
-	if (uiManager)
-	{
-		uiManager->Modify("HIT : ", std::string("HIT : ") + std::to_string(hitCount));
-		uiManager->Draw();
-	}
+		glUseProgram(shaderProgram[3]);
+		if (screenEffect)
+		{
+			screenEffect->Draw(shaderProgram[3]);
+		}
+		glDisable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
 
-	glUseProgram(shaderProgram[3]);
-	if (screenEffect)
+		break;
+	}
+	case GAME_STATE::INTRO:
 	{
-		screenEffect->Draw(shaderProgram[3]);
+		glDisable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
+		glUseProgram(shaderProgram[3]);
+		if (screenEffect)
+		{
+			screenEffect->Draw(shaderProgram[3]);
+		}
+
+		break;
+	}
+	default:
+		std::cout << "정의되지 않은 GameState입니다" << std::endl;
+		break;
 	}
 
 	//셰이더 프로그램 사용 중지
@@ -603,8 +636,7 @@ void Framework::Draw()
 	
 
 
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
+	
 
 
 }
@@ -664,7 +696,7 @@ void Framework::CreateSnow()
 {
 	std::uniform_real_distribution<double>uxd(-15.0f, 15.0f);
 	std::uniform_real_distribution<double>uzd(-15.0f, 15.0f);
-	std::uniform_real_distribution<double> uyd(20.0f, 30.0f);
+	std::uniform_real_distribution<double> uyd(5.0f, 10.0f);
 	std::default_random_engine dre((unsigned int)time(0));
 
 	pSnow = new Snow*[100];
@@ -723,7 +755,19 @@ void Framework::CreateTexture()
 	int tLocation_1 = glGetUniformLocation(shaderProgram[0], "texture1"); 
 	glUniform1i (tLocation_1, 0); 
 }
-
+void Framework::ChangeGameState(bool isStart)
+{
+	if(isStart)
+	{
+		gameState = GAME_STATE::INGAME;
+		screenEffect->IsGameStart(true);
+	}
+	else
+	{
+		gameState = GAME_STATE::INTRO;
+		screenEffect->IsGameStart(false);
+	}
+}
 void Framework::SetTexture()
 {
 	glActiveTexture(GL_TEXTURE0);

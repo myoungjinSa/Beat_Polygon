@@ -65,10 +65,14 @@
     <None Include="vertexShader.glvs" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="christmas.png" />
+    <Image Include="flower.png" />
     <Image Include="ice1.png" />
     <Image Include="ice2.png" />
     <Image Include="ice3.png" />
+    <Image Include="ice5.png" />
     <Image Include="iceScreen.png" />
+    <Image Include="Intro.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
