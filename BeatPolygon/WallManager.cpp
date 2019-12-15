@@ -32,7 +32,7 @@ void WallManager::Create(const GLuint& sObj,const GLuint& sParticleShaderObj)
 	for (int i = 0; i < blockCount; ++i)
 	{
 	
-		walls[i].Create(sObj,2.0f,2.0f,2.0f);
+		walls[i].Create(sObj,2.0f,2.0f,4.0f);
 		walls[i].SetPosition(glm::vec3(uxd(dre), 3.5f, -15.0f * 5.0f));
 		walls[i].InitParticleShader(sParticleShaderObj);
 	}
