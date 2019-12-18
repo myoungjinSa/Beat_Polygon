@@ -2,67 +2,71 @@
 #include "Mesh.h"
 
 class Camera;
+
+
 class Light :public Mesh
 {
 public:
-	Light() = default;
-	Light(Diffuse_Vertex v0, Diffuse_Vertex v1, Diffuse_Vertex v2, Diffuse_Vertex v3, Diffuse_Vertex v4, Diffuse_Vertex v5, Diffuse_Vertex v6, Diffuse_Vertex v7);
+	Light() = delete;
+	Light(const Diffuse_Vertex& v0,const Diffuse_Vertex& v1,const Diffuse_Vertex& v2,const Diffuse_Vertex& v3,
+		const Diffuse_Vertex& v4,const Diffuse_Vertex& v5, const Diffuse_Vertex& v6,const Diffuse_Vertex& v7);
 	virtual ~Light();
 
 	void Update(const GLuint& sObj)final;
 	void Draw(const GLuint& sObj)final;
 	void Draw(const float& elapsedTime, const GLuint& sObj) {}
 //	void Draw(const float& elapsedTime, const GLuint & sObj, const glm::vec3& position) {  }
-	void SetRange(float range);
+	void SetRange(const float& range);
 	void SetPosition(const glm::vec3& pos);
-	void SetSpeed(float speed);
-	void SetWidth(float w);
-	void SetHeight(float h);
-	void SetDepth(float d);
+	void SetSpeed(const float& speed);
+	void SetWidth(const float& w);
+	void SetHeight(const float& h);
+	void SetDepth(const float& d);
 
-	float GetDepth() { return depth; }
-	float GetWidth() { return width; }
-	float GetHeight() { return height; }
-	float GetSpeed() { return fSpeed; }
+	const float& GetDepth() const;
+	const float& GetWidth() const;
+	const float& GetHeight() const;
+	const float& GetSpeed() const;
+
+	const glm::vec3& GetPosition() const { return position; }
+	void InitShader(const GLuint& n);
 
 
-	glm::vec3 GetPosition() { return position; }
-	void InitShader(GLuint n);
+public:
+	enum class DIRECTION{ LEFT,RIGHT,STOP }dir;
+	const int vCount = 8;
+	const int indexCount = 36;
+	const float rotationSpeed = 20.0f;
 
-
-	glm::mat4 trMatrix = glm::mat4(1.0f);
-	glm::mat4 rmMatrix = glm::mat4(1.0f);
-	glm::mat4 scMatrix = glm::mat4(1.0f);
-
-	glm::mat4 worldTransform = glm::mat4(1.0f);
-
-	glm::vec3 position = glm::vec3(0.0f,0.0f,0.0f);
-
+	
+	GLuint vertexBufferObject;
+	GLuint elementBufferObject;
 
 	Diffuse_Vertex v0; Diffuse_Vertex v1; Diffuse_Vertex v2; 
 	Diffuse_Vertex v3; Diffuse_Vertex v4; Diffuse_Vertex v5; 
 	Diffuse_Vertex v6; Diffuse_Vertex v7;
 
-
-	GLuint shaderObject;
-	GLuint vertexBufferObject;
-	GLuint elementBufferObject;
-	bool bDash{ false };
-
 	unsigned int Indices[36];
 
-	const int vCount = 8;
-	const int indexCount = 36;
+	bool bDash;
 
-	enum class DIRECTION{ LEFT,RIGHT,STOP }dir;
-	
+	glm::vec3 position ;
+
+private:
+
+	glm::mat4 trMatrix;
+	glm::mat4 rmMatrix;
+	glm::mat4 scMatrix;
+
+	glm::mat4 worldTransform;
+
+
+	GLuint shaderObject;
 
 private:
 	
 	float width, height,depth;
 	float fSpeed;
-	float fRange{ 0.0f };
-	glm::mat4 rm = glm::mat4(1.0f);
-	glm::vec3 look = glm::vec3(0.0f, 0.0f, 0.0f);
-	float rotationSpeed = 20.0f;
+	float fRange;
+	
 };

@@ -1,8 +1,18 @@
 #include "stdafx.h"
 #include "Snow.h"
 
+Snow::Snow()
+	: trMatrix{glm::mat4(1.0f)},
+	rmMatrix{glm::mat4(1.0f)},
+	fSpeed{0.0f}
+{
 
+}
 
+Snow::~Snow()
+{
+		std::cout << "Snow ¼Ò¸ê" << std::endl;
+}
 void Snow::SetPosition(const glm::vec3& pos)
 {
 	trMatrix[3].x = pos.x;
@@ -82,7 +92,7 @@ void Snow::Create()
 
 
 }
-void Snow::MoveDown(float timeElapsed)
+void Snow::MoveDown(const float& timeElapsed)
 {
 	
 
@@ -94,7 +104,7 @@ void Snow::MoveDown(float timeElapsed)
 		
 	}
 }
-void Snow::SetSpeed(float speed)
+void Snow::SetSpeed(const float& speed)
 {
 	this->fSpeed = speed;
 }
@@ -127,9 +137,6 @@ void Snow::Draw(const GLuint& sObj)
 	glVertexAttribPointer(attribNorm, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glVertexAttribPointer(attribUV, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	
-
-	
-
 	
 	glDrawArrays(GL_TRIANGLES, 0,36);
 

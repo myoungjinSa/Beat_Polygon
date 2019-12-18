@@ -19,14 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AlphaBlock.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particles.cpp" />
-    <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="ScreenEffect.cpp" />
     <ClCompile Include="Snow.cpp" />
     <ClCompile Include="Sound.cpp" />
@@ -36,14 +34,12 @@
     <ClCompile Include="WallManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AlphaBlock.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Particles.h" />
-    <ClInclude Include="Pyramid.h" />
     <ClInclude Include="ScreenEffect.h" />
     <ClInclude Include="Snow.h" />
     <ClInclude Include="Sound.h" />
@@ -53,16 +49,6 @@
     <ClInclude Include="UI.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="WallManager.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="alphaFragmentShader.glfs" />
-    <None Include="alphaVertexShader.glvs" />
-    <None Include="fragment.glfs" />
-    <None Include="lightFs.glfs" />
-    <None Include="lightVs.glvs" />
-    <None Include="screenFragmentShader.glfs" />
-    <None Include="screenVertexShader.glvs" />
-    <None Include="vertexShader.glvs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="christmas.png" />
@@ -137,7 +123,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>..\BeatPolygon\sound\FMOD\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\BeatPolygon\sound\FMOD\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>..\BeatPolygon;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

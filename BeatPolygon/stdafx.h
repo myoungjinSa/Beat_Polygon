@@ -48,7 +48,7 @@ public:
 	
 public:
 	Diffuse_Vertex() = default;
-	Diffuse_Vertex(glm::vec3 vec, glm::vec4 color) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, r{ color.x }, g{ color.y }, b{ color.z }, a{ color.a }{};
+	Diffuse_Vertex(const glm::vec3& vec, const glm::vec4& color) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, r{ color.x }, g{ color.y }, b{ color.z }, a{ color.a }{};
 	~Diffuse_Vertex() = default;
 };
 
@@ -67,7 +67,7 @@ public:
 	float nz;
 public:
 	Normal_Vertex() = default;
-	Normal_Vertex(glm::vec3 vec, glm::vec4 color, glm::vec3 normal) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, r{ color.x }, g{ color.y }, b{ color.z }, a{ color.a }, nx{normal.x},ny{normal.y},nz{normal.z} {};
+	Normal_Vertex(const glm::vec3& vec, const glm::vec4& color, const glm::vec3& normal) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, r{ color.x }, g{ color.y }, b{ color.z }, a{ color.a }, nx{normal.x},ny{normal.y},nz{normal.z} {};
 	~Normal_Vertex() = default;
 };
 
@@ -86,7 +86,7 @@ public:
 
 public:
 	UVAlphaVertex() = default;
-	UVAlphaVertex(glm::vec3 vec,glm::vec4 color,glm::vec2 uv )
+	UVAlphaVertex(const glm::vec3& vec,const glm::vec4& color,const glm::vec2& uv )
 		: fx{vec.x},fy{vec.y},fz{vec.z},r{color.r},g{color.g},b{color.b},a{color.a},fu{uv.x},fv{uv.y}
 	{}
 	~UVAlphaVertex() = default;
@@ -105,7 +105,7 @@ public:
 	float fv;
 public:
 	UVVertex() = default;
-	UVVertex(glm::vec3 vec, glm::vec3 normal, glm::vec2 uv) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, nx{ normal.x }, ny{ normal.y }, nz{ normal.z }, fu{ uv.x }, fv{ uv.y } {};
+	UVVertex(const glm::vec3& vec,const glm::vec3& normal, const glm::vec2& uv) :fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, nx{ normal.x }, ny{ normal.y }, nz{ normal.z }, fu{ uv.x }, fv{ uv.y } {};
 	~UVVertex() = default;
 };
 
@@ -126,7 +126,7 @@ public:
 	float fv;
 public:
 	UVColorVertex() = default;
-	UVColorVertex(glm::vec3 vec, glm::vec4 col, glm::vec3 normal, glm::vec2 uv) 
+	UVColorVertex(const glm::vec3& vec,const glm::vec4& col,const glm::vec3& normal,const glm::vec2& uv) 
 		:fx{ vec.x }, fy{ vec.y }, fz{ vec.z }, fr{ col.r }, fg{ col.g }, fb{ col.b }, fa{ col.a }, nx{ normal.x }, ny{ normal.y }, nz{ normal.z }, fu{ uv.x }, fv{ uv.y } {};
 	~UVColorVertex() = default;
 };

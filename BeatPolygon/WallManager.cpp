@@ -8,13 +8,19 @@
 
 
 WallManager::WallManager()
+	:blockCount{ 0 }
 {
 
 }
 
 WallManager::~WallManager()
 {
-
+#ifdef _WRITE_MUSIC
+	if (fp.is_open())
+	{
+		fp.close();
+	}
+#endif
 }
 
 void WallManager::Create(const GLuint& sObj,const GLuint& sParticleShaderObj)
@@ -43,7 +49,7 @@ void WallManager::Create(const GLuint& sObj,const GLuint& sParticleShaderObj)
 #ifndef WRITE_MUSIC
 void WallManager::ReadMusicFile()
 {
-	in.open("piano.txt");
+	in.open("../BeatPolygon/rythm/piano.txt");
 
 
 	if(in.is_open())
@@ -61,8 +67,7 @@ void WallManager::ReadMusicFile()
 	}
 	in.close();
 
-	std::cout << nodeTimeVector.size() << std::endl;
-	
+
 	blockCount = nodeTimeVector.size();
 	walls.reserve(blockCount+1);
 
@@ -78,7 +83,7 @@ void WallManager::ReadMusicFile()
 void WallManager::OpenMusicFile()
 {
 
-	fp.open("piano.txt");
+	fp.open("../BeatPolygon/rythm/piano.txt");
 	
 
 	
@@ -112,7 +117,7 @@ void WallManager::CloseMusicFile()
 	}
 }
 #endif
-void WallManager::Update(const float& time, Light* player,const std::unique_ptr<GAMESOUND>& uniqueSound)
+void WallManager::Update(const float& time, Light* player,const std::unique_ptr<GameSound>& uniqueSound)
 {
 	
 	std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();

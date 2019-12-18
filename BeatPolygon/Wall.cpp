@@ -4,9 +4,14 @@
 #include "Wall.h"
 
 Wall::Wall()
-	:width{0.0f},height{0.0f},
-	aColors{ glm::vec3{0.0f,1.0f,0.8f},glm::vec3{0.1f,1.0f,0.9f},glm::vec3{0.0f,1.0f,0.7f},
-			glm::vec3{0.0f,1.0f,1.0f}}
+	:width{0.0f},height{0.0f},halfWidth{0.0f},halfHeight{0.0f},halfDepth{0.0f},fSpeed{0.0f},
+	aColors{ glm::vec3{0.0f,1.0f,0.8f},glm::vec3{0.1f,1.0f,0.9f},glm::vec3{0.0f,1.0f,0.7f},glm::vec3{0.0f,1.0f,1.0f}},
+	trMatrix{glm::mat4(1.0f)},
+	rmMatrix{glm::mat4(1.0f)},
+	scMatrix{glm::mat4(1.0f)},
+	worldTransform{glm::mat4(1.0f)},
+	explosionPosition{glm::vec3(0.0f,0.0f,0.0f)},
+	position{glm::vec3(0.0f,0.0f,0.0f)}
 {
 	
 }
@@ -17,21 +22,21 @@ Wall::~Wall()
 }
 
 
-void Wall::SetWidth(float w)
+void Wall::SetWidth(const float& w)
 {
 	width = w;
 }
 
-void Wall::SetHeight(float h)
+void Wall::SetHeight(const float& h)
 {
 	height = h;
 }
 
-void Wall::SetDepth(float d)
+void Wall::SetDepth(const float& d)
 {
 	depth = d;
 }
-float Wall::Random(float min,float max)
+const float& Wall::Random(const float& min,const float& max)
 {
 	std::random_device rd;
 	std::default_random_engine dre(rd());
@@ -41,12 +46,10 @@ float Wall::Random(float min,float max)
 	return (float)urd(dre);
 	
 }
-float Wall::Random()
+const float& Wall::Random()
 {
 	return(rand() / float(RAND_MAX));
 }
-
-
 
 void Wall::InitParticleShader(const GLuint& shader)
 {
@@ -63,7 +66,7 @@ void Wall::CreateParticles()
 
 void Wall::SaveExplosionPos(const glm::vec3& pos)
 {
-	std::cout << pos.x << "," << pos.y << "," << pos.z << std::endl;
+	
 	for(int i =0;i<particleCount;++i)
 	{
 		aParticles[i].SetPosition(pos);
@@ -167,11 +170,11 @@ void Wall::SetPosition(const glm::vec3& pos)
 
 }
 
-void Wall::SetSpeed(float speed)
+void Wall::SetSpeed(const float& speed)
 {
 	fSpeed = speed;
 }
-void Wall::Move(float time)
+void Wall::Move(const float& time)
 {
 
 	position.z += fSpeed * time;
@@ -204,7 +207,7 @@ void Wall::CreateTexture(const GLuint& sObj)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	unsigned char* data = stbi_load("ice3.png", &widthImage, &heightImage, &numberOfChannel,0);
+	unsigned char* data = stbi_load("../BeatPolygon/Image/ice3.png", &widthImage, &heightImage, &numberOfChannel,0);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImage, heightImage, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	int tLocation_1 = glGetUniformLocation(sObj, "texture1"); 
@@ -213,11 +216,7 @@ void Wall::CreateTexture(const GLuint& sObj)
 void Wall::Update(const GLuint& sObj)
 {
 
-	if(b_Blowing)
-	{
-		
-	}
-	else
+	if(!b_Blowing)	
 	{
 		worldTransform = trMatrix * rmMatrix;
 

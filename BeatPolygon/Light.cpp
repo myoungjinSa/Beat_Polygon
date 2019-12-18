@@ -3,8 +3,11 @@
 #include "Camera.h"
 
 
-Light::Light(Diffuse_Vertex v0,Diffuse_Vertex v1,Diffuse_Vertex v2,Diffuse_Vertex v3,Diffuse_Vertex v4,Diffuse_Vertex v5,Diffuse_Vertex v6,Diffuse_Vertex v7)
+Light::Light(const Diffuse_Vertex& v0,const Diffuse_Vertex& v1,const Diffuse_Vertex& v2,const Diffuse_Vertex& v3,const Diffuse_Vertex& v4,const Diffuse_Vertex& v5,const Diffuse_Vertex& v6,const Diffuse_Vertex& v7)
 	:v0{v0},v1{v1},v2{v2},v3{v3},v4{v4},v5{v5},v6{v6},v7{v7},fSpeed{0.0f},width{0.0f},height{0.0f},depth{0.0f}
+	,trMatrix {glm::mat4(1.0f)},rmMatrix{glm::mat4(1.0f)},scMatrix{glm::mat4(1.0f)},worldTransform{glm::mat4(1.0f)}
+	,position{glm::vec3(0.0f,0.0f,0.0f)},fRange{0.0f}
+	,bDash{false}
 {
 
 }
@@ -21,18 +24,17 @@ void Light::SetPosition(const glm::vec3& pos)
 
 	position = pos;
 }
-void Light::SetRange(float range)
+void Light::SetRange(const float& range)
 {
 	fRange = range;
 }
-void Light::SetSpeed(float speed)
+void Light::SetSpeed(const float& speed)
 {
 	fSpeed = speed;
 
-
 }
 
-void Light::InitShader(GLuint shaderObj)
+void Light::InitShader(const GLuint& shaderObj)
 {
 	shaderObject = shaderObj;
 }
@@ -55,21 +57,24 @@ void Light::Update(const GLuint& sObj)
 
 
 }
-void Light::SetWidth(float w)
+void Light::SetWidth(const float& w)
 {
 	width = w ;
 }
 
-void Light::SetHeight(float h)
+void Light::SetHeight(const float& h)
 {
 	height = h;
 }
 
-void Light::SetDepth(float d)
+void Light::SetDepth(const float& d)
 {
 	depth = d;
 }
-
+const float& Light::GetDepth() const { return depth; }
+const float& Light::GetWidth() const { return width; }
+const float& Light::GetHeight() const { return height; }
+const float& Light::GetSpeed() const { return fSpeed; }
 
 void Light::Draw(const GLuint& sObj)
 {

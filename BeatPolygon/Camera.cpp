@@ -2,14 +2,24 @@
 #include "Camera.h"
 #include "Timer.h"
 
-Camera::Camera(glm::vec3 pos,glm::vec3 dir,glm::vec3 up)
-	: cameraPos{pos},cameraTarget{dir},cameraUp{up}
+
+Camera::Camera(const glm::vec3& pos,const glm::vec3& dir,const glm::vec3& up)
+	: cameraPos{ pos }, 
+	cameraTarget{ dir }, 
+	cameraUp{ up },
+	cameraDirection{0.0f,0.0f,-1.0f},
+	rmMatrix{ glm::mat4(1.0f) },
+	trMatrix{ glm::mat4(1.0f) },
+	worldTransform{ glm::mat4(1.0f) },
+	view{ glm::mat4(1.0f) },
+	projection {glm::mat4(1.0f)}
+
 {
 	
 	
 }
 
-void Camera::Update(const GLuint& sObj,float width,float height)
+void Camera::Update(const GLuint& sObj,const float& width,const float& height)
 {
 
 	view = glm::lookAt(cameraPos, cameraTarget, cameraUp) * rmMatrix;
@@ -53,7 +63,7 @@ void Camera::SetDirection(const glm::vec3& center)
 	glm::vec3 up = glm::normalize(glm::cross(cameraUp, dir));
 }
 
-void Camera::Rotate(Timer t,glm::vec3 axis)
+void Camera::Rotate(const Timer& t,const glm::vec3& axis)
 {
 
 	const float rotationSpeed = 100.0f;

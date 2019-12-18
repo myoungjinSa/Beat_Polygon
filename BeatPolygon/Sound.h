@@ -8,7 +8,7 @@
 #define SOUND_BACKGROUND_MUSIC2 2
 
 //게임 사운드
-class GAMESOUND
+class GameSound
 {
 private:
 	FMOD_SYSTEM *system;
@@ -18,18 +18,15 @@ private:
 	
 
 public:
-	GAMESOUND();
+	GameSound();
 	
-	void Reset_AllSound()
-	{
-
-	}
+	void Reset_AllSound();
 	void Create(const char* filePath);
-	void SetVolume(long type,float volume);
+	void SetVolume(const long& type,const float& volume);
 
 	void PlaySOUND(long Type);
-	~GAMESOUND();
+	~GameSound();
 
 public:
-	bool musicStart{ false };
+	bool musicStart;
 };

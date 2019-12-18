@@ -7,15 +7,17 @@ class Crane;
 class Light;
 class Pyramid;
 class Snow;
-class AlphaBlock;
+
 class WallManager;
 class UI;
 class UIManager;
-class GAMESOUND;
+class GameSound;
 class ScreenEffect;
 
 constexpr int shaderCount = 4;
-
+constexpr int cubeCount = 10 ;
+constexpr int blockCount = 5;
+constexpr int snowCount = 100;
 
 class Framework
 {
@@ -23,17 +25,15 @@ public:
 	Framework();
 	~Framework();
 
-	void CreateCamera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up);
+	void CreateCamera(const glm::vec3& pos,const glm::vec3& dir,const glm::vec3& up);
 	void Init(int argc, char** argv);
 	bool InitShader();
 	void CreateSnow();
-	bool CheckProgram(GLuint program);
-	GLuint CreateShader(GLenum shaderType, const std::string& source);
+	bool CheckProgram(const GLuint& program);
+	const GLuint& CreateShader(const GLenum& shaderType, const std::string& source);
 	const std::string ReadStringFromFile(const std::string& filename);
 	void CreateCube();
-	void CreatePyramid();
 	void CreateLight();
-	void CreateBlocks();
 	void CreateLeftCube();
 	void CreateRightCube();
 	void CreateCeiling();
@@ -42,57 +42,37 @@ public:
 	void CreateScreenEffect();
 	void CreateTexture();
 	void SetTexture();
-	void AddFont();
-	void ChangeGameState(bool isStart);
+	void CreateFonts();
+	void ChangeGameState(const bool& isStart);
 	
 
 	void CheckCollision();
-	void RotateCamera(bool bRot);
+	void RotateCamera(const bool& bRot);
 	void Update();
-	void DrawRightWall();
-	void DrawLeftWall();
-	void DrawCeiling();
-	void DrawFloor();
+	void DrawRightWall(const GLuint& sObj);
+	void DrawLeftWall(const GLuint& sObj);
+	void DrawCeiling(const GLuint& sObj);
+	void DrawFloor(const GLuint& sObj);
 	void DrawFont();
 	void Draw();
-	GLvoid Reshape(int w, int h);
+
 	void StartDash();
 	void EndDash();
 
-	int GetScreenWidth() { return fWindowWidth; }
-	int GetScreenHeight() { return fWindowHeight; }
-
+	inline const int& GetScreenWidth() const;
+	inline const int& GetScreenHeight() const;
+	inline const GLuint& GetShaderProgram(const int& i) const;
+	inline const GLvoid Reshape(const int& w, const int& h);
 public:
-
-	Camera* pCamera{ nullptr };
-	
-	enum class GAME_STATE { INTRO, INGAME } gameState;
-
-	const int blockCount = 5;
-	const int snowCount = 100;
-	Snow** pSnow;
-	Cube** pCube{ nullptr };
-	Cube** pLeftCube{ nullptr };
-	Cube** pRightCube{ nullptr };
-	Cube** pCeiling{ nullptr };
 
 	static unsigned short hitCount;
 	static unsigned short combo;
-
-
-	AlphaBlock** pBlocks{ nullptr };
-	glm::vec3 lightPos{ 2.0f, 5.2f, 1.0f };
-	Pyramid* pPyramid{ nullptr };
-	Light* pLight{ nullptr };
-	Timer timer;
+public:
 	
-	GLuint GetShaderProgram(int i) { return shaderProgram[i]; }
-
-	bool snowStop{ false };
-	WallManager* pWallManager{ nullptr };
-	std::unique_ptr<ScreenEffect> screenEffect;
-	std::unique_ptr<GAMESOUND> gameSound;
-	std::unique_ptr<UIManager> uiManager;
+	enum class GAME_STATE { INTRO, INGAME } gameState;
+	enum SHADER_OBJ{TEXTURED_LIGHT,DIFFUSE_COLOR,TEXTURED_ALPHA_LIGHT,TEXTURED_SCREEN} shaderObj;
+	//WallManager* pWallManager{ nullptr };
+	std::unique_ptr<WallManager> wallManager;
 private:
 
 	struct MapInfo 
@@ -109,14 +89,28 @@ private:
 	GLuint texture1;
 	GLuint shaderProgram[shaderCount];
 
-	
-	unsigned short keyCombination{0};
-	
+	glm::vec3 lightPos;
 
-
-	bool bMiddleRotate{ false };
+	unsigned short keyCombination;
 	
-	const int cubeCount{ 10 };
-	int fWindowWidth{ 1200 };
-	int fWindowHeight{ 720 };
+	std::unique_ptr<ScreenEffect> screenEffect;
+	std::unique_ptr<GameSound> gameSound;
+	std::unique_ptr<UIManager> uiManager;
+	std::unique_ptr<Camera> camera;
+	
+	Snow** pSnow;
+	Cube** pCube;
+	Cube** pLeftCube;
+	Cube** pRightCube;
+	Cube** pCeiling;
+
+	Light* pLight;
+	Timer timer;
+	
+	
+	int shaderNumber;
+	int fWindowWidth;
+	int fWindowHeight;
+
+	bool bMiddleRotate;
 };

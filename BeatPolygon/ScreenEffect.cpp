@@ -4,6 +4,11 @@
 #include "ScreenEffect.h"
 
 ScreenEffect::ScreenEffect()
+	:trMatrix{glm::mat4(1.0f)},
+	rmMatrix{glm::mat4(1.0f)},
+	scMatrix{glm::mat4(1.0f)},
+	worldTransform{glm::mat4(1.0f)},
+	position{glm::vec3(0.0f,0.0f,0.0f)}
 {
 
 }
@@ -78,11 +83,11 @@ void ScreenEffect::Draw(const GLuint& sObj)
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-void ScreenEffect::IsGameStart(bool isStart)
+void ScreenEffect::IsGameStart(const bool& isStart)
 {
 	isGameStart = isStart;
 }
-void ScreenEffect::CreateTexture(GLuint sObj,const char* texture1,const char* texture2)
+void ScreenEffect::CreateTexture(const GLuint& sObj,const char* texture1,const char* texture2)
 {
 	glGenSamplers(1, &sampler);
 	glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, GL_REPEAT);

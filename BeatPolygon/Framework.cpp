@@ -7,10 +7,8 @@
 #include "Cube.h"
 #include "Camera.h"
 #include "Light.h"
-
-#include "Pyramid.h"
 #include "Snow.h"
-#include "AlphaBlock.h"
+
 #include "UI.h"
 #include "Sound.h"
 #include "ScreenEffect.h"
@@ -19,12 +17,20 @@ unsigned short Framework::hitCount{ 0 };
 unsigned short Framework::combo{ 0 };
 
 Framework::Framework()
+	:shaderNumber{ 0 },
+	fWindowWidth{1200},
+	fWindowHeight{ 720 },
+	keyCombination{0},
+	lightPos{ 2.0f, 5.2f, 1.0f },
+	pCube{ nullptr },
+	pLeftCube{ nullptr },
+	pRightCube{ nullptr },
+	pCeiling{ nullptr },
+	pLight{ nullptr },
+	bMiddleRotate{ false }
 {
 
-
 	uiManager = std::make_unique<UIManager>();
-
-	
 
 }
 Framework::~Framework()
@@ -53,75 +59,28 @@ Framework::~Framework()
 		pSnow = nullptr;
 	}
 
-	for (int i = 0; i < blockCount; ++i)
-	{
-		if (pBlocks[i])
-		{
-			delete pBlocks[i];
-			pBlocks[i] = nullptr;
-		}
-		delete[] pBlocks;
-		pBlocks = nullptr;
-	}
-
-	if(pWallManager)
-	{
-#ifdef WRITE_MUSIC
-		pWallManager->CloseMusicFile();
-#endif
-		delete pWallManager;
-		pWallManager = nullptr;
-	}
-
 
 }
 
-void Framework::CreateCamera(glm::vec3 pos,glm::vec3 dir,glm::vec3 up)
+void Framework::CreateCamera(const glm::vec3& pos,const glm::vec3& dir,const glm::vec3& up)
 {
-	pCamera = new Camera{ pos,dir,up };
+	camera = std::make_unique<Camera>(pos,dir,up);
 
-	if(pCamera == nullptr)
+	if(camera == nullptr)
 	{
 		std::cout << "카메라 생성 실패" << std::endl;
 	}
 
 
 }
-void Framework::CreateBlocks()
-{
-	std::uniform_real_distribution<double>uxd(3.0f, 12.0f);
-	std::uniform_real_distribution<double>uxd2(-12.0f, -3.0f);
 
-	std::uniform_real_distribution<double>uzd(-12.0f, 12.0f);
-	
-
-	std::default_random_engine dre((unsigned int)time(0));
-	pBlocks = new AlphaBlock*[blockCount];
-
-	if (pBlocks)
-	{
-		for (int i = 0; i < blockCount; ++i)
-		{
-			pBlocks[i] = new AlphaBlock{};
-			if (pBlocks[i])
-			{
-				pBlocks[i]->Create(shaderProgram[2]);
-				if(i %2 == 0)
-					pBlocks[i]->SetPosition(glm::vec3(uxd(dre), 0.0f, uzd(dre)));
-				else
-					pBlocks[i]->SetPosition(glm::vec3(uxd2(dre), 0.0f, uzd(dre)));
-
-			}
-		}
-	}
-}
 void Framework::Init(int argc,char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(fWindowWidth, fWindowHeight);
-	glutCreateWindow("도형 자르기");
+	glutCreateWindow("BeatPolygon");
 	glewExperimental = GL_TRUE;
 	if(glewInit() != GLEW_OK)
 	{
@@ -135,8 +94,8 @@ void Framework::Init(int argc,char** argv)
 	InitShader();
 	CreateTexture();
 	CreateCube();
-	//CreateCeiling();
-	mapInfo.upPos = 10.0f;
+
+	
 	CreateRightCube();
 	CreateLeftCube();
 	CreateLight();
@@ -144,14 +103,15 @@ void Framework::Init(int argc,char** argv)
 	CreateSound();
 	CreateScreenEffect();
 	CreateWallManager();
-	AddFont();
+	CreateFonts();
 
 	gameState = GAME_STATE::INTRO;
 
-	//CreateObjModel();
+	
 	CreateCamera(glm::vec3{ pLight->GetPosition() + glm::vec3(0.0f,10.0f,35.0f)}, glm::vec3{ 0.0f,10.0f,-1.0f}, glm::vec3{ 0.0f,1.0f,0.0f });
 	timer.Start();
 
+	mapInfo.upPos = 10.0f;
 	
 	
 }
@@ -161,51 +121,40 @@ void Framework::CreateScreenEffect()
 
 	if(screenEffect)
 	{
-		
-		screenEffect->Create(shaderProgram[3],"christmas.png","Intro.png");
-
+		screenEffect->Create(shaderProgram[3],"../BeatPolygon/Image/christmas.png","../BeatPolygon/Image/Intro.png");
 	}
 
 }
 void Framework::CreateSound()
 {
-	gameSound = std::make_unique<GAMESOUND>();
+	gameSound = std::make_unique<GameSound>();
 	
 	if (gameSound)
 	{
 		gameSound->Create("../BeatPolygon/sound/piano3.mp3");
-		
 	}
 
 }
 void Framework::CreateWallManager()
 {
-	pWallManager = new WallManager{};
+	wallManager = std::make_unique<WallManager>();
 
 
-	if(pWallManager)
+	if(wallManager)
 	{
 		
 #ifdef WRITE_MUSIC
-		pWallManager->OpenMusicFile();
+		wallManager->OpenMusicFile();
 #else
-		pWallManager->ReadMusicFile();
+		wallManager->ReadMusicFile();
 #endif
 
-		pWallManager->Create(shaderProgram[2],shaderProgram[1]);
+		wallManager->Create(shaderProgram[2],shaderProgram[1]);
 	}
 }
 
-void Framework::CreatePyramid()
-{
-	pPyramid = new Pyramid{};
 
-	if (pPyramid)
-		pPyramid->Create(shaderProgram[2]);
-
-
-}
-void Framework::AddFont()
+void Framework::CreateFonts()
 {
 	if (uiManager) 
 	{
@@ -296,7 +245,7 @@ void Framework::CreateLight()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pLight->elementBufferObject);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * pLight->indexCount, &pLight->Indices[0], GL_STATIC_DRAW);
 
-	pLight->InitShader(shaderProgram[1]);
+	pLight->InitShader(shaderProgram[DIFFUSE_COLOR]);
 	pLight->SetPosition(glm::vec3(0.0f, 3.5f, -5.0f));
 	pLight->SetRange(10.0f);
 	pLight->SetSpeed(20.0f);
@@ -322,38 +271,35 @@ bool Framework::InitShader()
 		std::string vertexShaderSource{};
 		std::string fragShaderSource{};
 		
+		
 		//셰이더 프로그램 오브젝트 생성
 		shaderProgram[i] = glCreateProgram();
-		if (i == 0)
+
+		shaderObj = static_cast<SHADER_OBJ>(i);
+		switch(shaderObj)
 		{
-			vertexShaderSource = ReadStringFromFile("vertexShader.glvs");
-			fragShaderSource = ReadStringFromFile("fragment.glfs");
-			glBindAttribLocation(shaderProgram[i], 0, "vPos");
-			glBindAttribLocation(shaderProgram[i], 1, "vNormal");
-			glBindAttribLocation(shaderProgram[i], 2, "vUV");
-		}
-		else if(i == 1)
-		{
-			vertexShaderSource = ReadStringFromFile("lightVs.glvs");
-			fragShaderSource = ReadStringFromFile("lightFs.glfs");
-			glBindAttribLocation(shaderProgram[i], 0, "vPos");
-			glBindAttribLocation(shaderProgram[i], 1, "vColor");
-		}
-		else if(i == 2)
-		{
-			vertexShaderSource = ReadStringFromFile("alphaVertexShader.glvs");
-			fragShaderSource = ReadStringFromFile("alphaFragmentShader.glfs");
-			glBindAttribLocation(shaderProgram[i], 0, "vPos");
-			glBindAttribLocation(shaderProgram[i], 1, "vColor");
-			glBindAttribLocation(shaderProgram[i], 2, "vNormal");
-			glBindAttribLocation(shaderProgram[i], 3, "vUV");
-		}
-		else if(i == 3)
-		{
-			vertexShaderSource = ReadStringFromFile("screenVertexShader.glvs");
-			fragShaderSource = ReadStringFromFile("screenFragmentShader.glfs");
+		case SHADER_OBJ::TEXTURED_LIGHT:
+			vertexShaderSource = ReadStringFromFile("../BeatPolygon/shader/TexturedLightingVS.glvs");
+			fragShaderSource = ReadStringFromFile("../BeatPolygon/shader/TexturedLightingFS.glfs");
+			break;
+		case SHADER_OBJ::DIFFUSE_COLOR:
+			vertexShaderSource = ReadStringFromFile("../BeatPolygon/shader/DiffuseColorVS.glvs");
+			fragShaderSource = ReadStringFromFile("../BeatPolygon/shader/DiffuseColorFS.glfs");
 			
+			break;
+		case SHADER_OBJ::TEXTURED_ALPHA_LIGHT:
+			vertexShaderSource = ReadStringFromFile("../BeatPolygon/shader/TexturedAlphaLightingVS.glvs");
+			fragShaderSource = ReadStringFromFile("../BeatPolygon/shader/TexturedAlphaLightingFS.glfs");
+			
+			break;
+		case SHADER_OBJ::TEXTURED_SCREEN:
+			vertexShaderSource = ReadStringFromFile("../BeatPolygon/shader/TexturedScreenVS.glvs");
+			fragShaderSource = ReadStringFromFile("../BeatPolygon/shader/TexturedScreenFS.glfs");
+			break;
+
 		}
+	
+
 		GLuint vertShaderObj = CreateShader(GL_VERTEX_SHADER, vertexShaderSource);
 		GLuint fragShaderObj = CreateShader(GL_FRAGMENT_SHADER, fragShaderSource);
 
@@ -362,9 +308,6 @@ bool Framework::InitShader()
 		//셰이더 프로그램에 ㅂ텍스 및 프래그먼트 셰이더 등록
 		glAttachShader(shaderProgram[i], vertShaderObj);
 		glAttachShader(shaderProgram[i], fragShaderObj);
-
-	
-
 
 
 		//셰이더 프로그램과 셰이더 링킹 그리고 확인
@@ -389,32 +332,32 @@ bool Framework::InitShader()
 	return true;
 }
 
-void Framework::DrawRightWall()
+void Framework::DrawRightWall(const GLuint& sObj)
 {
 	glFrontFace(GL_CW);
 	if(pRightCube)
 	{
 		for(int i =0;i<cubeCount;++i)
 		{
-			pRightCube[i]->Draw(shaderProgram[0]);
+			pRightCube[i]->Draw(sObj);
 			
 		}
 	}
 }
 
-void Framework::DrawLeftWall()
+void Framework::DrawLeftWall(const GLuint& sObj)
 {
 	glFrontFace(GL_CW);
 	if(pLeftCube)
 	{
 		for(int i =0;i<cubeCount;++i)
 		{
-			pLeftCube[i]->Draw(shaderProgram[0]);
+			pLeftCube[i]->Draw(sObj);
 			
 		}
 	}
 }
-void Framework::DrawCeiling()
+void Framework::DrawCeiling(const GLuint& sObj)
 {
 	glFrontFace(GL_CCW);
 	if (pCeiling)
@@ -422,13 +365,13 @@ void Framework::DrawCeiling()
 		for (int i = 0; i < cubeCount; ++i)
 		{
 			
-			pCeiling[i]->Draw(shaderProgram[0]);
+			pCeiling[i]->Draw(sObj);
 		
 		}
 	}
 
 }
-void Framework::DrawFloor()
+void Framework::DrawFloor(const GLuint& sObj)
 {
 	glFrontFace(GL_CCW);
 	if (pCube)
@@ -436,7 +379,7 @@ void Framework::DrawFloor()
 		for (int i = 0; i < cubeCount; ++i)
 		{
 			
-			pCube[i]->Draw(shaderProgram[0]);
+			pCube[i]->Draw(sObj);
 		
 		}
 	}
@@ -477,7 +420,6 @@ void Framework::Update()
 
 		}
 
-
 		if (gameSound->musicStart == false && gameSound)
 		{
 			gameSound->PlaySOUND(0);
@@ -485,7 +427,6 @@ void Framework::Update()
 			gameSound->musicStart = true;
 
 		}
-
 
 		CheckCollision();
 	}
@@ -520,10 +461,7 @@ void Framework::Draw()
 {
 	timer.Tick(0.0f);
 
-	
-
 	Reshape(fWindowWidth, fWindowHeight);
-
 	Update();
 
 	switch (gameState)
@@ -534,67 +472,50 @@ void Framework::Draw()
 		glCullFace(GL_BACK);
 		glEnable(GL_DEPTH_TEST);
 
-		glUseProgram(shaderProgram[0]);
-		DrawLeftWall();
-		DrawRightWall();
-		DrawFloor();
-		//DrawCeiling();
-
-		if (pCamera) {
-
-			if (pLight)
+		glUseProgram(shaderProgram[TEXTURED_LIGHT]);
+		DrawLeftWall(shaderProgram[TEXTURED_LIGHT]);
+		DrawRightWall(shaderProgram[TEXTURED_LIGHT]);
+		DrawFloor(shaderProgram[TEXTURED_LIGHT]);
+	
+		if (pLight && camera)
+		{
+			camera->Update(shaderProgram[TEXTURED_LIGHT], fWindowWidth, fWindowHeight);
+			SetTexture();
+			if (pSnow)
 			{
-				pCamera->Update(shaderProgram[0], fWindowWidth, fWindowHeight);
-
-				SetTexture();
-				if (pSnow)
+				for (int i = 0; i < snowCount; ++i)
 				{
-					for (int i = 0; i < snowCount; ++i)
-					{
-						if (snowStop == false)
-							pSnow[i]->MoveDown(timer.GetTimeElapsed());
-						pSnow[i]->Draw(shaderProgram[0]);
-					}
+					pSnow[i]->MoveDown(timer.GetTimeElapsed());
+					pSnow[i]->Draw(shaderProgram[TEXTURED_LIGHT]);
 				}
-				glBindTexture(GL_TEXTURE_2D, 0);
-
-				pLight->Draw(shaderProgram[0]);
-
-
-				pCamera->Update(shaderProgram[1], fWindowWidth, fWindowHeight);
-
-
 			}
-
+			glBindTexture(GL_TEXTURE_2D, 0);
+			pLight->Draw(shaderProgram[TEXTURED_LIGHT]);
+		
+			camera->Update(shaderProgram[DIFFUSE_COLOR], fWindowWidth, fWindowHeight);
 		}
 
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		glUseProgram(shaderProgram[TEXTURED_ALPHA_LIGHT]);
 
-		glUseProgram(shaderProgram[2]);
-
-
-
-		if (pWallManager)
+		if (wallManager)
 		{
-			if (pLight)
+			if (pLight && camera)
 			{
+				camera->Update(shaderProgram[TEXTURED_ALPHA_LIGHT], fWindowWidth, fWindowHeight);
+			
 				if (gameSound->musicStart)
 				{
-					pWallManager->Update(timer.GetTimeElapsed(), pLight, gameSound);
-					pWallManager->Draw(timer.GetTimeElapsed(), shaderProgram[2]);
+					wallManager->Update(timer.GetTimeElapsed(), pLight, gameSound);
+					wallManager->Draw(timer.GetTimeElapsed(), shaderProgram[TEXTURED_ALPHA_LIGHT]);
 				}
+				pLight->Draw(shaderProgram[TEXTURED_ALPHA_LIGHT]);
 			}
 		}
 
-		if (pCamera)
-		{
-			pCamera->Update(shaderProgram[2], fWindowWidth, fWindowHeight);
-			if (pLight)
-				pLight->Draw(shaderProgram[2]);
-		}
 		//셰이더 프로그램 사용 중지
 		glUseProgram(0);
 		if (uiManager)
@@ -604,10 +525,10 @@ void Framework::Draw()
 			uiManager->Draw();
 		}
 
-		glUseProgram(shaderProgram[3]);
+		glUseProgram(shaderProgram[TEXTURED_SCREEN]);
 		if (screenEffect)
 		{
-			screenEffect->Draw(shaderProgram[3]);
+			screenEffect->Draw(shaderProgram[TEXTURED_SCREEN]);
 		}
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
@@ -618,10 +539,10 @@ void Framework::Draw()
 	{
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
-		glUseProgram(shaderProgram[3]);
+		glUseProgram(shaderProgram[TEXTURED_SCREEN]);
 		if (screenEffect)
 		{
-			screenEffect->Draw(shaderProgram[3]);
+			screenEffect->Draw(shaderProgram[TEXTURED_SCREEN]);
 		}
 
 		break;
@@ -633,15 +554,11 @@ void Framework::Draw()
 
 	//셰이더 프로그램 사용 중지
 	glUseProgram(0);
-	
-
-
-	
 
 
 }
 
-bool Framework::CheckProgram(GLuint program)
+bool Framework::CheckProgram(const GLuint& program)
 {
 	GLint state;
 	glGetProgramiv(program, GL_LINK_STATUS, &state);
@@ -660,7 +577,7 @@ bool Framework::CheckProgram(GLuint program)
 	return true;
 }
 
-GLuint Framework::CreateShader(GLenum shaderType, const std::string& source)
+const GLuint& Framework::CreateShader(const GLenum& shaderType, const std::string& source)
 {
 	GLuint shader = glCreateShader(shaderType);
 	if (shader == 0)
@@ -717,11 +634,11 @@ void Framework::CreateSnow()
 
 
 
-void Framework::RotateCamera(bool bRot)
+void Framework::RotateCamera(const bool& bRot)
 {
-	if(pCamera)
+	if(camera)
 	{
-		pCamera->bRotation = bRot;
+		camera->bRotation = bRot;
 	}
 }
 void Framework::CreateTexture()
@@ -749,13 +666,13 @@ void Framework::CreateTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	unsigned char* data = stbi_load("ice4.png", &widthImage, &heightImage, &numberOfChannel,0);
+	unsigned char* data = stbi_load("../BeatPolygon/Image/ice4.png", &widthImage, &heightImage, &numberOfChannel,0);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImage, heightImage, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	int tLocation_1 = glGetUniformLocation(shaderProgram[0], "texture1"); 
 	glUniform1i (tLocation_1, 0); 
 }
-void Framework::ChangeGameState(bool isStart)
+void Framework::ChangeGameState(const bool& isStart)
 {
 	if(isStart)
 	{
@@ -849,7 +766,7 @@ void Framework::CreateCube()
 			glBindBuffer(GL_ARRAY_BUFFER, pCube[i]->vertexBufferObject);
 			glBufferData(GL_ARRAY_BUFFER, pCube[i]->vCube.size() * sizeof(UVVertex), &pCube[i]->vCube, GL_STATIC_DRAW);
 
-			pCube[i]->CreateTexture(shaderProgram[0],"ice4.png");
+			pCube[i]->CreateTexture(shaderProgram[0],"../BeatPolygon/Image/ice4.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			pCube[i]->SetPosition(glm::vec3(0.0f, 0.0f, (-30.0f*i)));
 			mapInfo.downPos = 0.2f;
@@ -936,7 +853,7 @@ void Framework::CreateCeiling()
 			glBindBuffer(GL_ARRAY_BUFFER, pCeiling[i]->vertexBufferObject);
 			glBufferData(GL_ARRAY_BUFFER, pCeiling[i]->vCube.size() * sizeof(UVVertex), &pCeiling[i]->vCube, GL_STATIC_DRAW);
 
-			pCeiling[i]->CreateTexture(shaderProgram[0],"ice4.png");
+			pCeiling[i]->CreateTexture(shaderProgram[0],"../BeatPolygon/Image/ice4.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			pCeiling[i]->SetPosition(glm::vec3(0.0f, 0.0f, (-30.0f*i)));
 			
@@ -1023,7 +940,7 @@ void Framework::CreateRightCube()
 			glBindBuffer(GL_ARRAY_BUFFER, pRightCube[i]->vertexBufferObject);
 			glBufferData(GL_ARRAY_BUFFER, pRightCube[i]->vCube.size() * sizeof(UVVertex), &pRightCube[i]->vCube, GL_STATIC_DRAW);
 
-			pRightCube[i]->CreateTexture(shaderProgram[0],"ice4.png");
+			pRightCube[i]->CreateTexture(shaderProgram[0],"../BeatPolygon/Image/ice4.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			pRightCube[i]->SetPosition(glm::vec3(15.0f, 0.0f, (-30.0f * i)));
 			mapInfo.rightPos = 14.0f;
@@ -1109,7 +1026,7 @@ void Framework::CreateLeftCube()
 			glBindBuffer(GL_ARRAY_BUFFER, pLeftCube[i]->vertexBufferObject);
 			glBufferData(GL_ARRAY_BUFFER, pLeftCube[i]->vCube.size() * sizeof(UVVertex), &pLeftCube[i]->vCube, GL_STATIC_DRAW);
 
-			pLeftCube[i]->CreateTexture(shaderProgram[0],"ice4.png");
+			pLeftCube[i]->CreateTexture(shaderProgram[0],"../BeatPolygon/Image/ice4.png");
 			//pCube[i]->Create(shaderProgram[0]);
 			
 			pLeftCube[i]->SetPosition(glm::vec3(-15.0f, 0.0f, (-30.0f * i)));
@@ -1121,9 +1038,20 @@ void Framework::CreateLeftCube()
 }
 
 
-GLvoid Framework::Reshape(int w,int h)
+const GLvoid Framework::Reshape(const int& w,const int& h)
 {
-
 	glViewport(0, 0, w , h);
-	//glOrtho(0.0, (float)w, (float)h, 0.0, -1.0, 1.0);
+}
+const GLuint& Framework::GetShaderProgram(const int& i) const
+{
+	return shaderProgram[i];
+}
+const int& Framework::GetScreenWidth() const
+{
+	return fWindowWidth;
+}
+
+const int& Framework::GetScreenHeight() const
+{
+	return fWindowHeight;
 }

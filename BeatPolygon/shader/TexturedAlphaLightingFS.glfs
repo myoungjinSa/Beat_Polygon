@@ -1,0 +1,31 @@
+#version 330
+
+in vec3 FragPos;
+in vec4 outColor;
+in vec3 Normal;
+in vec2 outUV;
+
+out vec4 FragColor;
+
+
+uniform vec3 lightPos;
+uniform vec3 lightColor;
+
+uniform sampler2D texture1;
+
+void main(void)
+{
+	vec3 ambientLight = vec3(0.3f,0.3f,0.3f);		//전역 조명 세기
+	vec3 ambient = ambientLight * lightColor;		//전역 조명 값
+
+	vec3 normalVector = Normal;
+	vec3 lightDir = normalize(lightPos - FragPos);	//조명의 입사각
+	float diffuseLight = max(dot(normalVector,lightDir),0.0f);
+
+	vec3 diffuse = diffuseLight * lightColor;
+
+	vec4 result = vec4((ambient + diffuse),1.0f);
+
+	
+	FragColor = result * texture(texture1,outUV) * outColor ;	
+}

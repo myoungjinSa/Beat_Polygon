@@ -24,17 +24,15 @@ void Timer::Stop()
 	bStopped = true;
 }
 
-float Timer::GetTimeElapsed()
+const float Timer::GetTimeElapsed() const
 {
 	return fTimeElapsed;
 }
 
-void Timer::Tick(float fLockFps)
+void Timer::Tick(const float& fLockFps)
 {
 	
 	std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();
-
-	//std::chrono::steady_clock::time_point elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currTime - elapsedTime)
 
 	std::chrono::milliseconds milli = std::chrono::duration_cast<std::chrono::milliseconds>(currTime - elapsedTime);
 	std::chrono::duration<float> t = milli;
@@ -43,6 +41,5 @@ void Timer::Tick(float fLockFps)
 	fTimeElapsed = t.count();
 
 
-	//std::cout << t.c.count() << std::endl;
 }
 

@@ -7,25 +7,22 @@ public:
 	Timer();
 	~Timer();
 
-	void Tick(float fLockFps = 0.0f);
+	void Tick(const float& fLockFps = 0.0f);
 
 	void Start();
 	void Stop();
-	void Reset();
-
-	float GetTimeElapsed();
+	
+	const float GetTimeElapsed() const;
 
 
 public:
 	static std::chrono::steady_clock::time_point musicStartTime;
 private:
-	float fTimeElapsed;
-//	std::chrono::duration<float, std::chrono::milliseconds> fMilli;
-	
+
 	std::chrono::steady_clock::time_point startTime;
 	std::chrono::steady_clock::time_point elapsedTime;
 
-
+	float fTimeElapsed;
 	bool bStopped;
 	
 };

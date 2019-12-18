@@ -12,7 +12,7 @@ UIManager::~UIManager()
 
 void UIManager::AddUI(void* font,const std::string& text,const float& x,const float& y)
 {
-	//uiArray.emplace_back(UI{(unsigned char)font, text,x,y });
+
 	uiArray.emplace(text,UI{(unsigned char) font,text,x,y });
 
 }
@@ -35,11 +35,6 @@ void UIManager::Draw()
 	}
 }
 
-
-UI::UI()
-{
-	std::cout << "UI 디폴트 생성자 호출" << std::endl;
-}
 UI::UI(unsigned char font,const std::string& s,const float& px,const float& py)
 	:fontStyle{font},text{s},xPos{px},yPos{py}
 {

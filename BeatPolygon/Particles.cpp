@@ -3,6 +3,16 @@
 
 
 Particle::Particle()
+	:trMatrix{glm::mat4(1.0f)},
+	rmMatrix{glm::mat4(1.0f)},
+	scMatrix{glm::mat4(1.0f)},
+	worldTransform{glm::mat4{1.0f}},
+	position{glm::vec3{0.0f,0.0f,0.0f}},
+	maxExplosionDuration{0.0f},
+	fSpeed{0.0f},
+	movingDirection{glm::vec3(0.0f,0.0f,0.0f)},
+	explosionTime{0.0f}
+
 {
 
 }
@@ -12,7 +22,7 @@ Particle::~Particle()
 
 }
 
-void Particle::Create(GLuint sObj,const glm::vec3& movingDir,glm::vec3 color)
+void Particle::Create(const GLuint& sObj,const glm::vec3& movingDir,const glm::vec3& color)
 {
 	float r = color.r;
 	float g = color.g;
@@ -153,12 +163,12 @@ void Particle::SetPosition(const glm::vec3 & pos)
 	trMatrix[3].z = pos.z;
 }
 
-glm::vec3 Particle::GetPosition()
+const glm::vec3& Particle::GetPosition() const
 {
 	return position;
 }
 
-void Particle::InitShader(GLuint shaderObj)
+void Particle::InitShader(const GLuint& shaderObj)
 {
 	shaderObject = shaderObj;
 }

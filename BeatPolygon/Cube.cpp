@@ -22,16 +22,19 @@ void Cube::SetPosition(const glm::vec3& pos)
 	trMatrix[3].z = pos.z;
 
 }
+void Cube::SetID(const int& i)
+{
+	id = i;
+}
 
-
-glm::vec3 Cube::GetPosition()
+const glm::vec3 Cube::GetPosition() const
 {
 	glm::vec3 p = glm::vec3(trMatrix[3].x, trMatrix[3].y, trMatrix[3].z);
 	
 	return p;
 }
 
-void Cube::Create(GLuint sObj)
+void Cube::Create(const GLuint& sObj)
 {
 	//front
 	vCube[0] = UVVertex(glm::vec3(-15.0f, 0.1f, -30.0f),glm::vec3(-1.0f,1.0f,1.0f), glm::vec2(0.0f, 1.0f));			
@@ -99,10 +102,10 @@ void Cube::Create(GLuint sObj)
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 	glBufferData(GL_ARRAY_BUFFER, vCube.size() * sizeof(UVVertex), &vCube, GL_STATIC_DRAW);
 
-	CreateTexture(sObj,"ice3.png");
+	CreateTexture(sObj,"../BeatPolygon/Image/ice3.png");
 }
 
-void Cube::CreateTexture(GLuint sObj,const char* textureName)
+void Cube::CreateTexture(const GLuint& sObj,const char* textureName)
 {
 	glGenSamplers(1, &sampler);
 	glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, GL_REPEAT);

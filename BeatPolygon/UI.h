@@ -21,9 +21,9 @@ private:
 class UI
 {
 public:
-	UI();
+	UI()=delete;
 	UI(unsigned char font,const std::string& s,const float& px,const float& py);
-	virtual ~UI();
+	~UI();
 
 	void Create(void* fontStyle, const std::string& text,const float& x,const float& y);
 	void Modify(const std::string& newText);
@@ -32,9 +32,7 @@ public:
 private:
 	std::string text;
 	unsigned char fontStyle;
-	float xPos{0.0f};
-	float yPos{0.0f};
-
-
+	float xPos;
+	float yPos;
 
 };

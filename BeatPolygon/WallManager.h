@@ -4,18 +4,9 @@
  
 class Light;
 class Wall;
-class GAMESOUND;
+class GameSound;
 class WallManager 
 {
-	
-	std::vector<Wall> walls;
-
-	std::ofstream fp;
-	std::ifstream in;
-	std::string time;
-	std::vector<float> nodeTimeVector;
-
-
 public:
 	WallManager();
 	~WallManager();
@@ -29,14 +20,21 @@ public:
 	void ReadMusicFile();
 #endif
 	void Create(const GLuint& sObj,const GLuint& sParticleShaderObj);
-	void Update(const float& time,Light* pLight,const std::unique_ptr<GAMESOUND>& uniqueSound);
+	void Update(const float& time,Light* pLight,const std::unique_ptr<GameSound>& uniqueSound);
 	void Draw(const float& elapsedTime,const GLuint& sObj);
 	
 
 	volatile bool CheckCollision(Light* player, Wall* pWall);
 	void ProcessCollision(Wall& wall);
 
-public:
-	int blockCount{0};
+private:
+	int blockCount;
+
+	std::vector<Wall> walls;
+
+	std::ofstream fp;
+	std::ifstream in;
+	std::string time;
+	std::vector<float> nodeTimeVector;
 
 };

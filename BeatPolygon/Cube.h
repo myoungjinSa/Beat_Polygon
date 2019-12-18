@@ -20,18 +20,17 @@ public:
 	Cube();
 	virtual ~Cube();
 
-
-	void InitShader(GLuint shaderObj);
+	void CreateTexture(const GLuint& sObj,const char* textureName);
+	void Create(const GLuint& sObj);
+	
 	void Update(const GLuint &sObj);
 	void Draw(const GLuint & sObj);
 	void Draw(const float& elapsedTime, const GLuint& sObj) {}
-	//void Draw(const float& elapsedTime, const GLuint & sObj, const glm::vec3& position) {}
-	void CreateTexture(GLuint sObj,const char* textureName);
-	void Create(GLuint sObj);
-	void SetID(int i) { id = i; }
+	
+	void SetID(const int& i);
 	void SetPosition(const glm::vec3 & pos);
 
-	glm::vec3 GetPosition();
+	const glm::vec3 GetPosition() const;
 
 public:
 	
