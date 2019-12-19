@@ -1,5 +1,4 @@
 #pragma once
-#include"Wall.h"
 #include <fstream>
  
 class Light;

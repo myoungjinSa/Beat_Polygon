@@ -23,7 +23,7 @@ public:
 public:
 	Camera()=delete;
 	Camera(const glm::vec3& pos,const glm::vec3& dir,const glm::vec3& up);
-	~Camera() {}
+	~Camera();
 
 	glm::vec3 GetCameraPos() const { return cameraPos; }
 	glm::vec3 GetCameraTarget() const { return cameraTarget; }

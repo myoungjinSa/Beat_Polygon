@@ -59,9 +59,11 @@ public:
 	void StartDash();
 	void EndDash();
 
-	inline const int& GetScreenWidth() const;
-	inline const int& GetScreenHeight() const;
-	inline const GLuint& GetShaderProgram(const int& i) const;
+	const int& GetScreenWidth() const;
+	const int& GetScreenHeight() const;
+
+	const GLuint& GetShaderProgram(const int& i) const;
+
 	inline const GLvoid Reshape(const int& w, const int& h);
 public:
 

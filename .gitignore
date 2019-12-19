@@ -20,7 +20,8 @@
 *.sbr
 \.vs
 \x64
-\Debug
-\Release
+*\Debug
+*\Release
 *.iobj
 *.ipdb
+

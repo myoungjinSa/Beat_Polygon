@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "WallManager.h"
 #include "Framework.h"
+#include "Wall.h"
 #include "Light.h"
 #include "Timer.h"
 #include "Sound.h"
@@ -15,6 +16,7 @@ WallManager::WallManager()
 
 WallManager::~WallManager()
 {
+
 #ifdef _WRITE_MUSIC
 	if (fp.is_open())
 	{
@@ -22,6 +24,7 @@ WallManager::~WallManager()
 	}
 #endif
 }
+
 
 void WallManager::Create(const GLuint& sObj,const GLuint& sParticleShaderObj)
 {
@@ -121,12 +124,9 @@ void WallManager::Update(const float& time, Light* player,const std::unique_ptr<
 {
 	
 	std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();
-
 	std::chrono::milliseconds elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currTime - Timer::musicStartTime);
 	std::chrono::duration<float> t = elapsedTime;
 
-	//static float currtime = 0.0f;
-	//currtime+= time;
 	static int nodeIndex = 0;
 	
 
@@ -258,8 +258,6 @@ volatile bool WallManager::CheckCollision(Light* player,Wall* pWall)
 		bCollision = true;
 	}
 
-	
-
 	return bCollision;
 }
 
@@ -269,5 +267,6 @@ void WallManager::Draw(const float& elapsedTime,const GLuint& sObj)
 	{
 		walls[i].Draw(elapsedTime,sObj);
 	}
-	
 }
+
+

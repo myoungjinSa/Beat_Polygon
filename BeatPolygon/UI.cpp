@@ -45,6 +45,7 @@ UI::UI(unsigned char font,const std::string& s,const float& px,const float& py)
 UI::~UI()
 {
 
+
 }
 
 void UI::Modify(const std::string& newText) 

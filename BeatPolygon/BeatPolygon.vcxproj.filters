@@ -54,6 +54,9 @@
     <ClCompile Include="ScreenEffect.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">

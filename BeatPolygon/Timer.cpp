@@ -31,6 +31,7 @@ const float Timer::GetTimeElapsed() const
 
 void Timer::Tick(const float& fLockFps)
 {
+
 	
 	std::chrono::steady_clock::time_point currTime = std::chrono::steady_clock::now();
 

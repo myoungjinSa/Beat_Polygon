@@ -18,7 +18,10 @@ Camera::Camera(const glm::vec3& pos,const glm::vec3& dir,const glm::vec3& up)
 	
 	
 }
-
+Camera::~Camera()
+{
+	
+}
 void Camera::Update(const GLuint& sObj,const float& width,const float& height)
 {
 
