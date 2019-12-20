@@ -64,6 +64,9 @@ public:
 	const int& GetScreenHeight() const;
 	const GLuint& GetShaderProgram(const int& i) const;
 
+
+	
+
 	inline const GLvoid Reshape(const int& w, const int& h);
 public:
 

@@ -97,6 +97,8 @@ Framework::~Framework()
 
 }
 
+
+
 void Framework::CreateCamera(const glm::vec3& pos,const glm::vec3& dir,const glm::vec3& up)
 {
 	camera = std::make_unique<Camera>(pos,dir,up);

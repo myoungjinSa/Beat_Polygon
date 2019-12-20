@@ -47,8 +47,8 @@ public:
 
 	
 public:
-	volatile bool b_Blowing{ false };
-	bool b_Active{ false };
+	volatile bool b_Blowing;
+	bool b_Active;
 private:
 	std::array<glm::vec3, 4> aColors;
 	std::array<UVColorVertex, 36> vCube;

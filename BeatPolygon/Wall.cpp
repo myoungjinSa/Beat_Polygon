@@ -4,7 +4,8 @@
 #include "Wall.h"
 
 Wall::Wall()
-	:width{0.0f},height{0.0f},halfWidth{0.0f},halfHeight{0.0f},halfDepth{0.0f},fSpeed{0.0f},
+	:b_Blowing{false},b_Active{false},
+	width{0.0f},height{0.0f},halfWidth{0.0f},halfHeight{0.0f},halfDepth{0.0f},fSpeed{0.0f},
 	aColors{ glm::vec3{0.0f,1.0f,0.8f},glm::vec3{0.1f,1.0f,0.9f},glm::vec3{0.0f,1.0f,0.7f},glm::vec3{0.0f,1.0f,1.0f}},
 	trMatrix{glm::mat4(1.0f)},
 	rmMatrix{glm::mat4(1.0f)},
