@@ -7,8 +7,14 @@ class GameSound;
 class WallManager 
 {
 public:
-	WallManager();
+	explicit WallManager();
 	~WallManager();
+
+	WallManager(const WallManager& ref) = delete;
+	WallManager& operator=(const WallManager& ref) = delete;
+
+	WallManager(WallManager&& rval) = delete;
+	WallManager& operator=(WallManager&& rval) = delete;
 
 #ifdef WRITE_MUSIC
 	void OpenMusicFile();
@@ -23,7 +29,7 @@ public:
 	void Draw(const float& elapsedTime,const GLuint& sObj);
 	
 
-	volatile bool CheckCollision(Light* player, Wall* pWall);
+	bool CheckCollision(Light* player, Wall* pWall);
 	void ProcessCollision(Wall& wall);
 
 private:

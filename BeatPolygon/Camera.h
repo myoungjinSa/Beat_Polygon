@@ -25,6 +25,13 @@ public:
 	Camera(const glm::vec3& pos,const glm::vec3& dir,const glm::vec3& up);
 	~Camera();
 
+	Camera(const Camera& ref)=delete;
+	const Camera& operator=(const Camera& ref)=delete;
+
+	Camera(Camera&& rval) = delete;
+	Camera& operator=(Camera&& rval) = delete;
+
+
 	glm::vec3 GetCameraPos() const { return cameraPos; }
 	glm::vec3 GetCameraTarget() const { return cameraTarget; }
 	void SetPosition(const glm::vec3& pos);
@@ -34,6 +41,5 @@ public:
 	void MoveLeft(const glm::vec3& pos);
 	void MoveRight(const glm::vec3& pos);
 	void SetDirection(const glm::vec3& dir);
-public:
-	bool bRotation = false;
+
 };

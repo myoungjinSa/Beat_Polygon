@@ -4,9 +4,14 @@
 class ScreenEffect : public Mesh
 {
 public:
-	ScreenEffect();
+	explicit ScreenEffect();
 	virtual ~ScreenEffect();
 
+	ScreenEffect(const ScreenEffect& ref) = delete;
+	ScreenEffect& operator=(const ScreenEffect& ref) = delete;
+
+	ScreenEffect(ScreenEffect&& rval) = delete;
+	ScreenEffect& operator=(ScreenEffect&& rval) = delete;
 	
 	void Create(const GLuint& sObj,const char* image,const char* image2);
 	void Update(const GLuint& sObj)final;
@@ -17,8 +22,7 @@ public:
 	void CreateTexture(const GLuint& sObj,const char* texture1,const char* texture2);
 	void IsGameStart(const bool& texture);
 
-public:
-	bool isGameStart{ false };
+
 private:
 	glm::mat4 trMatrix;
 	glm::mat4 rmMatrix;
@@ -28,13 +32,17 @@ private:
 
 	glm::vec3 position;
 
-	std::array<UVAlphaVertex, 6> aSquare;
+	
 
 	GLuint sampler;
 	GLuint texture[2];
 	GLuint shaderObject;
 	GLuint vertexBufferObject;
 
-	const int vCount = 8;
+	bool isGameStart;
 
+	const int vCount;
+
+	
+	std::array<UVAlphaVertex, 6> aSquare;
 };

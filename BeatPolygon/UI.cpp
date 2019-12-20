@@ -27,8 +27,6 @@ void UIManager::Modify(const std::string& s,const std::string& newText)
 }
 void UIManager::Draw()
 {
-
-	
 	for(const auto& d:uiArray)
 	{
 		d.second.Draw();

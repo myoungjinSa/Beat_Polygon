@@ -8,7 +8,13 @@ ScreenEffect::ScreenEffect()
 	rmMatrix{glm::mat4(1.0f)},
 	scMatrix{glm::mat4(1.0f)},
 	worldTransform{glm::mat4(1.0f)},
-	position{glm::vec3(0.0f,0.0f,0.0f)}
+	position{glm::vec3(0.0f,0.0f,0.0f)},
+	sampler{0},
+	texture{0},
+	shaderObject{0},
+	vertexBufferObject{0},
+	vCount{8},
+	isGameStart{false}
 {
 
 }

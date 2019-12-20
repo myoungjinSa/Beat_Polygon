@@ -4,10 +4,15 @@
 
 
 Light::Light(const Diffuse_Vertex& v0,const Diffuse_Vertex& v1,const Diffuse_Vertex& v2,const Diffuse_Vertex& v3,const Diffuse_Vertex& v4,const Diffuse_Vertex& v5,const Diffuse_Vertex& v6,const Diffuse_Vertex& v7)
-	:v0{v0},v1{v1},v2{v2},v3{v3},v4{v4},v5{v5},v6{v6},v7{v7},fSpeed{0.0f},width{0.0f},height{0.0f},depth{0.0f}
+	:shaderObject{ 0 }, fSpeed{ 0.0f }, width{ 0.0f }, height{ 0.0f }, depth{ 0.0f }, fRange{ 0.0f }
 	,trMatrix {glm::mat4(1.0f)},rmMatrix{glm::mat4(1.0f)},scMatrix{glm::mat4(1.0f)},worldTransform{glm::mat4(1.0f)}
-	,position{glm::vec3(0.0f,0.0f,0.0f)},fRange{0.0f}
-	,bDash{false}
+	,v0{v0},v1{v1},v2{v2},v3{v3},v4{v4},v5{v5},v6{v6},v7{v7},Indices{0},bDash{false}
+	,position{glm::vec3(0.0f,0.0f,0.0f)}
+	,vertexBufferObject{0}
+	,elementBufferObject{0}
+	,dir{DIRECTION::STOP}
+	,vCount{8}
+	,indexCount{36}
 {
 
 }

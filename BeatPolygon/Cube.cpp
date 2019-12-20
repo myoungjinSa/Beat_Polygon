@@ -4,16 +4,25 @@
 #include "Cube.h"
 
 Cube::Cube()
-	
+	:
+	sampler{0},
+	texture{0},
+	shaderObject{0},
+	trMatrix{glm::mat4(1.0f)},
+	rmMatrix{glm::mat4(1.0f)},
+	scMatrix{glm::mat4(1.0f)},
+	worldTransform{glm::mat4(1.0f)},
+	vertexBufferObject{0},
+	vertexCount{36}
 {
 
-	
-	//std::cout << "Cube 생성" << std::endl;
 }
 Cube::~Cube()
 {
-	//std::cout << "Cube 소멸" << std::endl;
+	
 }
+
+
 void Cube::SetPosition(const glm::vec3& pos)
 {
 
@@ -22,16 +31,10 @@ void Cube::SetPosition(const glm::vec3& pos)
 	trMatrix[3].z = pos.z;
 
 }
-void Cube::SetID(const int& i)
-{
-	id = i;
-}
 
-const glm::vec3 Cube::GetPosition() const
+const glm::vec3& Cube::GetPosition() const
 {
-	glm::vec3 p = glm::vec3(trMatrix[3].x, trMatrix[3].y, trMatrix[3].z);
-	
-	return p;
+	return glm::vec3(trMatrix[3].x, trMatrix[3].y, trMatrix[3].z);
 }
 
 void Cube::Create(const GLuint& sObj)
@@ -121,10 +124,10 @@ void Cube::CreateTexture(const GLuint& sObj,const char* textureName)
 	
 
 	//텍스쳐 이름 생성
-	glGenTextures(1, &texture1);
+	glGenTextures(1, &texture);
 	
 	//이제 GL_TEXTURE_2D 바인딩 포인트를 사용하여 콘텍스트에 바인딩 한다.
-	glBindTexture(GL_TEXTURE_2D, texture1);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -168,7 +171,7 @@ void Cube::Draw(const GLuint & sObj)
 
 	
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture1);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -180,7 +183,4 @@ void Cube::Draw(const GLuint & sObj)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 
-	//glUseProgram(sObj);
-
-	
 }

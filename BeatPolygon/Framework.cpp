@@ -25,9 +25,14 @@ Framework::Framework()
 	pCube{ nullptr },
 	pLeftCube{ nullptr },
 	pRightCube{ nullptr },
-	pCeiling{ nullptr },
+	
 	pLight{ nullptr },
-	bMiddleRotate{ false }
+	pSnow{nullptr},
+	timer(),
+	sampler{0},
+	texture1(0),
+	shaderProgram{0},
+	mapInfo()
 {
 
 	uiManager = std::make_unique<UIManager>();
@@ -37,9 +42,39 @@ Framework::~Framework()
 {
 	if (pCube)
 	{
-		delete pCube;
+		for(int i =0;i<cubeCount;++i)
+		{
+			delete pCube[i];
+			pCube[i] = nullptr;
+		}
+		delete[] pCube;
 		pCube = nullptr;
+
 	}
+	if (pLeftCube)
+	{
+		for(int i =0;i<cubeCount;++i)
+		{
+			delete pLeftCube[i];
+			pLeftCube[i] = nullptr;
+		}
+		delete[] pLeftCube;
+		pLeftCube = nullptr;
+
+	}
+	if (pRightCube)
+	{
+		for(int i =0;i<cubeCount;++i)
+		{
+			delete pRightCube[i];
+			pRightCube[i] = nullptr;
+		}
+		delete[] pRightCube;
+		pRightCube = nullptr;
+
+	}
+	
+
 
 
 	if(pLight)
@@ -275,12 +310,14 @@ bool Framework::InitShader()
 		//셰이더 프로그램 오브젝트 생성
 		shaderProgram[i] = glCreateProgram();
 
+	
 		shaderObj = static_cast<SHADER_OBJ>(i);
 		switch(shaderObj)
 		{
 		case SHADER_OBJ::TEXTURED_LIGHT:
 			vertexShaderSource = ReadStringFromFile("../BeatPolygon/shader/TexturedLightingVS.glvs");
 			fragShaderSource = ReadStringFromFile("../BeatPolygon/shader/TexturedLightingFS.glfs");
+			
 			break;
 		case SHADER_OBJ::DIFFUSE_COLOR:
 			vertexShaderSource = ReadStringFromFile("../BeatPolygon/shader/DiffuseColorVS.glvs");
@@ -299,7 +336,6 @@ bool Framework::InitShader()
 
 		}
 	
-
 		GLuint vertShaderObj = CreateShader(GL_VERTEX_SHADER, vertexShaderSource);
 		GLuint fragShaderObj = CreateShader(GL_FRAGMENT_SHADER, fragShaderSource);
 
@@ -357,20 +393,7 @@ void Framework::DrawLeftWall(const GLuint& sObj)
 		}
 	}
 }
-void Framework::DrawCeiling(const GLuint& sObj)
-{
-	glFrontFace(GL_CCW);
-	if (pCeiling)
-	{
-		for (int i = 0; i < cubeCount; ++i)
-		{
-			
-			pCeiling[i]->Draw(sObj);
-		
-		}
-	}
 
-}
 void Framework::DrawFloor(const GLuint& sObj)
 {
 	glFrontFace(GL_CCW);
@@ -420,11 +443,11 @@ void Framework::Update()
 
 		}
 
-		if (gameSound->musicStart == false && gameSound)
+		if (gameSound->GetMusicStart() == false && gameSound)
 		{
 			gameSound->PlaySOUND(0);
 			Timer::musicStartTime = std::chrono::steady_clock::now();
-			gameSound->musicStart = true;
+			gameSound->SetMusicStart(true);
 
 		}
 
@@ -507,7 +530,7 @@ void Framework::Draw()
 			{
 				camera->Update(shaderProgram[TEXTURED_ALPHA_LIGHT], fWindowWidth, fWindowHeight);
 			
-				if (gameSound->musicStart)
+				if (gameSound->GetMusicStart())
 				{
 					wallManager->Update(timer.GetTimeElapsed(), pLight, gameSound);
 					wallManager->Draw(timer.GetTimeElapsed(), shaderProgram[TEXTURED_ALPHA_LIGHT]);
@@ -599,7 +622,7 @@ const GLuint& Framework::CreateShader(const GLenum& shaderType, const std::strin
 	return shader;
 }
 
-const std::string Framework::ReadStringFromFile(const std::string& filename) {
+std::string Framework::ReadStringFromFile(const std::string& filename) {
 	std::ifstream f(filename);
 
 	if (!f.is_open())
@@ -634,13 +657,7 @@ void Framework::CreateSnow()
 
 
 
-void Framework::RotateCamera(const bool& bRot)
-{
-	if(camera)
-	{
-		camera->bRotation = bRot;
-	}
-}
+
 void Framework::CreateTexture()
 {
 	glGenSamplers(1, &sampler);
@@ -770,93 +787,6 @@ void Framework::CreateCube()
 			//pCube[i]->Create(shaderProgram[0]);
 			pCube[i]->SetPosition(glm::vec3(0.0f, 0.0f, (-30.0f*i)));
 			mapInfo.downPos = 0.2f;
-		}
-
-
-	}
-
-
-}
-void Framework::CreateCeiling()
-{
-
-	pCeiling = new Cube*[cubeCount];
-	
-
-	if (pCeiling) 
-	{
-		for (int i = 0; i < cubeCount; ++i)
-		{
-			pCeiling[i] = new Cube{};
-			pCeiling[i]->vCube[0] = UVVertex(glm::vec3(-15.0f, 10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f));
-			pCeiling[i]->vCube[1] = UVVertex(glm::vec3(-15.0f, 10.0f, -30.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
-			pCeiling[i]->vCube[2] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f));
-
-
-			pCeiling[i]->vCube[3] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f));
-			pCeiling[i]->vCube[4] = UVVertex(glm::vec3(-15.0f,10.0f, -30.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
-			pCeiling[i]->vCube[5] = UVVertex(glm::vec3(15.0f, 10.0f, -30.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec2(1.0f, 0.0f));
-
-			//left
-			pCeiling[i]->vCube[6] = UVVertex(glm::vec3(-15.0f, 10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f));
-			pCeiling[i]->vCube[7] = UVVertex(glm::vec3(-15.0f, 10.2f, 0.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
-			pCeiling[i]->vCube[8] = UVVertex(glm::vec3(-15.0f, 10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 0.0f));
-
-
-			pCeiling[i]->vCube[9] = UVVertex(glm::vec3(-15.0f, 10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f));
-			pCeiling[i]->vCube[10] = UVVertex(glm::vec3(-15.0f,10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 0.0f));
-			pCeiling[i]->vCube[11] = UVVertex(glm::vec3(-15.0f,10.0f, -30.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec2(1.0f, 0.0f));
-
-			//back
-			pCeiling[i]->vCube[12] = UVVertex(glm::vec3(-15.0f,10.2f, 0.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
-			pCeiling[i]->vCube[13] = UVVertex(glm::vec3(15.0f, 10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
-			pCeiling[i]->vCube[14] = UVVertex(glm::vec3(-15.0f,10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 0.0f));
-
-
-			pCeiling[i]->vCube[15] = UVVertex(glm::vec3(15.0f,10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
-			pCeiling[i]->vCube[16] = UVVertex(glm::vec3(15.0f,10.0f, 0.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 0.0f));
-			pCeiling[i]->vCube[17] = UVVertex(glm::vec3(-15.0f,10.2f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 0.0f));
-
-			//right
-			pCeiling[i]->vCube[18] = UVVertex(glm::vec3(15.0f, 10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
-			pCeiling[i]->vCube[19] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f));
-			pCeiling[i]->vCube[20] = UVVertex(glm::vec3(15.0f, 10.0f, 0.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 0.0f));
-
-
-			pCeiling[i]->vCube[21] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f));
-			pCeiling[i]->vCube[22] = UVVertex(glm::vec3(15.0f, 10.0f, -30.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
-			pCeiling[i]->vCube[23] = UVVertex(glm::vec3(15.0f, 10.0f, 0.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 0.0f));
-
-			//top
-			pCeiling[i]->vCube[24] = UVVertex(glm::vec3(15.0f, 10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
-			pCeiling[i]->vCube[25] = UVVertex(glm::vec3(-15.0f,10.2f, 0.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
-			pCeiling[i]->vCube[26] = UVVertex(glm::vec3(-15.0f,10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
-
-
-			pCeiling[i]->vCube[27] = UVVertex(glm::vec3(15.0f, 10.2f, 0.0f), glm::vec3(1.0f, 1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
-			pCeiling[i]->vCube[28] = UVVertex(glm::vec3(-15.0f,10.2f, -30.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
-			pCeiling[i]->vCube[29] = UVVertex(glm::vec3(15.0f, 10.2f, -30.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f));
-
-			//bottom
-			pCeiling[i]->vCube[30] = UVVertex(glm::vec3(-15.0f,10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
-			pCeiling[i]->vCube[31] = UVVertex(glm::vec3(15.0f, 10.0f, 0.0f), glm::vec3(1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
-			pCeiling[i]->vCube[32] = UVVertex(glm::vec3(15.0f, 10.0f, -30.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
-
-
-			pCeiling[i]->vCube[33] = UVVertex(glm::vec3(-15.0f,10.0f, 0.0f), glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec2(0.0f, 1.0f));
-			pCeiling[i]->vCube[34] = UVVertex(glm::vec3(15.0f, 10.0f, -30.0f), glm::vec3(1.0f, -1.0f, 1.0f), glm::vec2(0.0f, 0.0f));
-			pCeiling[i]->vCube[35] = UVVertex(glm::vec3(-15.0f,10.0f, -30.0f), glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec2(1.0f, 0.0f));
-
-
-			glGenBuffers(1, &pCeiling[i]->vertexBufferObject);
-
-			glBindBuffer(GL_ARRAY_BUFFER, pCeiling[i]->vertexBufferObject);
-			glBufferData(GL_ARRAY_BUFFER, pCeiling[i]->vCube.size() * sizeof(UVVertex), &pCeiling[i]->vCube, GL_STATIC_DRAW);
-
-			pCeiling[i]->CreateTexture(shaderProgram[0],"../BeatPolygon/Image/ice4.png");
-			//pCube[i]->Create(shaderProgram[0]);
-			pCeiling[i]->SetPosition(glm::vec3(0.0f, 0.0f, (-30.0f*i)));
-			
 		}
 
 

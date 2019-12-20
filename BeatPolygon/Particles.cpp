@@ -8,10 +8,14 @@ Particle::Particle()
 	scMatrix{glm::mat4(1.0f)},
 	worldTransform{glm::mat4{1.0f}},
 	position{glm::vec3{0.0f,0.0f,0.0f}},
+	movingDirection{glm::vec3(0.0f,0.0f,0.0f)},
+	shaderObject{0},
+	vertexBufferObject{0},
 	maxExplosionDuration{0.0f},
 	fSpeed{0.0f},
-	movingDirection{glm::vec3(0.0f,0.0f,0.0f)},
-	explosionTime{0.0f}
+	explosionTime{0.0f},
+	vCount{36},
+	gravity{0.0f,-1.0f,0.0f}
 
 {
 

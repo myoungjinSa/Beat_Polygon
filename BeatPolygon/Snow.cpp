@@ -2,7 +2,11 @@
 #include "Snow.h"
 
 Snow::Snow()
-	: trMatrix{glm::mat4(1.0f)},
+	: 
+	vertexCount{6},
+	gravity{0.01f,0.001f,0.0f},
+	vertexBufferObject{0},
+	trMatrix{glm::mat4(1.0f)},
 	rmMatrix{glm::mat4(1.0f)},
 	fSpeed{0.0f}
 {

@@ -33,7 +33,6 @@ void WallManager::Create(const GLuint& sObj,const GLuint& sParticleShaderObj)
 	
 	int division = 3;
 	std::uniform_real_distribution<double>uxd(-13.0f, 13.0f);
-
 	std::random_device rd;
 	std::default_random_engine dre(rd());
 
@@ -189,9 +188,9 @@ void WallManager::ProcessCollision(Wall& wall)
 	}
 	
 }
-volatile bool WallManager::CheckCollision(Light* player,Wall* pWall)
+bool WallManager::CheckCollision(Light* player,Wall* pWall)
 {
-	volatile bool bCollision{ false };
+	bool bCollision{ false };
 	float bonusSize = 0.5f;
 	float playerL_X = player->GetPosition().x - player->GetWidth() * 0.5f;
 	float playerR_X = player->GetPosition().x + player->GetWidth() * 0.5f;

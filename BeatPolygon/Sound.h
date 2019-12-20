@@ -14,19 +14,20 @@ private:
 	FMOD_SYSTEM *system;
 	FMOD_SOUND *soundFile[2];
 	FMOD_CHANNEL *channel[2];
-
-	
+	bool musicStart;
 
 public:
-	GameSound();
-	
+	explicit GameSound();
+	~GameSound();
+
+
 	void Reset_AllSound();
 	void Create(const char* filePath);
 	void SetVolume(const long& type,const float& volume);
 
-	void PlaySOUND(long Type);
-	~GameSound();
+	void SetMusicStart(bool s);
+	bool GetMusicStart() { return musicStart; }
 
-public:
-	bool musicStart;
+	void PlaySOUND(long Type);
+
 };

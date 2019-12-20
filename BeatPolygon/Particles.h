@@ -7,8 +7,15 @@ class Particle : public Mesh
 
 public:
 
-	Particle();
+	explicit Particle();
 	virtual ~Particle();
+
+	Particle(const Particle& ref) = delete;
+	Particle& operator=(const Particle& ref) = delete;
+
+	Particle(Particle&& rval) = default;
+	Particle& operator=(Particle&& rval) = default;
+
 	void Create(const GLuint& sObj,const glm::vec3& movingDir,const glm::vec3& color);
 	void InitShader(const GLuint& shaderObj);
 	void Update(const GLuint& sObj)final {}
@@ -19,14 +26,6 @@ public:
 	const glm::vec3& GetPosition() const;
 
 private:
-	const int vCount = 8;
-	const int indexCount = 36;
-	const glm::vec3 gravity{ 0.0f,-1.0f,0.0f };
-	
-
-
-private:
-	std::array<Diffuse_Vertex, 36> vCube;
 
 	glm::mat4 trMatrix;
 	glm::mat4 rmMatrix;
@@ -39,10 +38,14 @@ private:
 
 	GLuint shaderObject;
 	GLuint vertexBufferObject;
-	GLuint elementBufferObject;
 	
 	float maxExplosionDuration;
 	float fSpeed;
 	float explosionTime;
+
+	const int vCount;
+	const glm::vec3 gravity;
+
+	std::array<Diffuse_Vertex, 36> vCube;
 
 };

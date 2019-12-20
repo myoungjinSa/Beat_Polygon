@@ -3,6 +3,10 @@
 
 std::chrono::steady_clock::time_point Timer::musicStartTime = std::chrono::steady_clock::now();
 Timer::Timer()
+	:startTime(),
+	elapsedTime(),
+	fTimeElapsed{0},
+	bStopped(0)
 {
 }
 

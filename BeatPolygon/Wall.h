@@ -10,8 +10,15 @@ class Wall : public Mesh
 {
 
 public:
-	Wall();
+	explicit Wall();
 	virtual ~Wall();
+
+	Wall(const Wall& ref) = delete;
+	Wall& operator=(const Wall& ref) = delete;
+
+	Wall(Wall&& rval)=default;
+	Wall& operator=(Wall&& rval) = default;
+	
 
 	virtual void Update(const GLuint& sObj)final;
 	virtual void Draw(const float& elapsedTime,const GLuint& sObj)final;
