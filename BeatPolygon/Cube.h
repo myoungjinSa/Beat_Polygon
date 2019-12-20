@@ -36,7 +36,6 @@ public:
 	
 	void Update(const GLuint &sObj);
 	void Draw(const GLuint & sObj);
-	void Draw(const float& elapsedTime, const GLuint& sObj) {}
 	
 	void SetPosition(const glm::vec3 & pos);
 

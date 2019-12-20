@@ -17,8 +17,7 @@ public:
 	void Update(const GLuint& sObj)final;
 
 	void Draw(const GLuint& sObj)final;
-	void Draw(const float& elapsedTime,const GLuint& sObj)final{}
-
+	
 	void CreateTexture(const GLuint& sObj,const char* texture1,const char* texture2);
 	void IsGameStart(const bool& texture);
 

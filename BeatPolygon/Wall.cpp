@@ -5,7 +5,7 @@
 
 Wall::Wall()
 	:b_Blowing{false},b_Active{false},
-	width{0.0f},height{0.0f},halfWidth{0.0f},halfHeight{0.0f},halfDepth{0.0f},fSpeed{0.0f},
+	width{ 0.0f }, height{ 0.0f }, halfWidth{ 0.0f }, halfHeight{ 0.0f }, halfDepth{ 0.0f }, fSpeed{ 0.0f },fTimeElapsed{0.0f},
 	aColors{ glm::vec3{0.0f,1.0f,0.8f},glm::vec3{0.1f,1.0f,0.9f},glm::vec3{0.0f,1.0f,0.7f},glm::vec3{0.0f,1.0f,1.0f}},
 	trMatrix{glm::mat4(1.0f)},
 	rmMatrix{glm::mat4(1.0f)},
@@ -179,7 +179,8 @@ void Wall::Move(const float& time)
 {
 
 	position.z += fSpeed * time;
-
+	fTimeElapsed = time;
+	
 	SetPosition(position);
 }
 
@@ -225,9 +226,10 @@ void Wall::Update(const GLuint& sObj)
 
 		glUniformMatrix4fv(WT, 1, GL_FALSE, glm::value_ptr(worldTransform));
 	}
+
 }
 
-void Wall::Draw(const float& elapsedTime,const GLuint& sObj)
+void Wall::Draw(const GLuint& sObj)
 {
 	if(b_Blowing)
 	{
@@ -235,7 +237,8 @@ void Wall::Draw(const float& elapsedTime,const GLuint& sObj)
 
 		for(int i = 0;i<particleCount;++i)
 		{
-			aParticles[i].Draw(elapsedTime,sObj);
+			aParticles[i].UpdatePos(fTimeElapsed);
+			aParticles[i].Draw(sObj);
 		}
 
 	}

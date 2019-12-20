@@ -264,7 +264,7 @@ void WallManager::Draw(const float& elapsedTime,const GLuint& sObj)
 {
 	for (int i = 0; i < blockCount; ++i)
 	{
-		walls[i].Draw(elapsedTime,sObj);
+		walls[i].Draw(sObj);
 	}
 }
 

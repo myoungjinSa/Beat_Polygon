@@ -106,7 +106,7 @@ void Particle::Create(const GLuint& sObj,const glm::vec3& movingDir,const glm::v
 
 }
 
-void Particle::UpdatePos(const float& elapsedTime,const GLuint& sObj)
+void Particle::UpdatePos(const float& elapsedTime)
 {
 	explosionTime += elapsedTime;
 	if (explosionTime <= maxExplosionDuration)
@@ -120,21 +120,23 @@ void Particle::UpdatePos(const float& elapsedTime,const GLuint& sObj)
 		trMatrix[3].x = position.x;
 		trMatrix[3].y = position.y;
 		trMatrix[3].z = position.z;
-
-
-		worldTransform = trMatrix * rmMatrix;
-
-		unsigned int WT = glGetUniformLocation(sObj, "WorldTransform");
-
-		glUniformMatrix4fv(WT, 1, GL_FALSE, glm::value_ptr(worldTransform));
 	}
 	
 }
-
-void Particle::Draw(const float& elapsedTime,const GLuint& sObj)
+void Particle::Update(const GLuint& sObj)
 {
-	UpdatePos(elapsedTime,sObj);
+	worldTransform = trMatrix * rmMatrix;
+
+	unsigned int WT = glGetUniformLocation(sObj, "WorldTransform");
+
+	glUniformMatrix4fv(WT, 1, GL_FALSE, glm::value_ptr(worldTransform));
+}
+
+void Particle::Draw(const GLuint& sObj)
+{
 	
+	Update(sObj);
+
 	int attribPos = glGetAttribLocation(sObj, "vPos");
 	int attribCol = glGetAttribLocation(sObj, "vColor");
 

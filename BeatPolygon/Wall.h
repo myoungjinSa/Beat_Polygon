@@ -21,8 +21,7 @@ public:
 	
 
 	virtual void Update(const GLuint& sObj)final;
-	virtual void Draw(const float& elapsedTime,const GLuint& sObj)final;
-	virtual void Draw(const GLuint & sObj)final {}
+	virtual void Draw(const GLuint & sObj)final;
 
 	void Move(const float& time);
 	void Create(const GLuint& sObj,float width,float height,float depth);
@@ -39,16 +38,18 @@ public:
 	void SetWidth(const float& w);
 	void SetHeight(const float& h);
 	void SetDepth(const float& d);
-
+	
 	const glm::vec3& GetPosition() const { return position; }
 	const float& GetWidth() const { return width; }
 	const float& GetHeight() const { return height; }
 	const float& GetDepth() const { return depth; }
 
-	
+
 public:
 	volatile bool b_Blowing;
 	bool b_Active;
+
+
 private:
 	std::array<glm::vec3, 4> aColors;
 	std::array<UVColorVertex, 36> vCube;
@@ -66,6 +67,7 @@ private:
 	float halfHeight;
 	float halfDepth;
 	float fSpeed;
+	float fTimeElapsed;
 
 
 	glm::mat4 trMatrix;
@@ -76,4 +78,6 @@ private:
 
 	glm::vec3 explosionPosition;
 	glm::vec3 position;
+	
+
 };

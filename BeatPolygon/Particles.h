@@ -18,10 +18,10 @@ public:
 
 	void Create(const GLuint& sObj,const glm::vec3& movingDir,const glm::vec3& color);
 	void InitShader(const GLuint& shaderObj);
-	void Update(const GLuint& sObj)final {}
-	void UpdatePos(const float& elapsedTime,const GLuint &sObj);
-	void Draw(const GLuint & sObj)final {}
-	void Draw(const float& elapsedTime, const GLuint & sObj)final;
+	void Update(const GLuint& sObj)final;
+	void UpdatePos(const float& elapsedTime);
+	void Draw(const GLuint & sObj)final;
+	
 	void SetPosition(const glm::vec3 & pos);
 	const glm::vec3& GetPosition() const;
 
