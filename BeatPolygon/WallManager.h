@@ -29,7 +29,7 @@ public:
 	void Draw(const float& elapsedTime,const GLuint& sObj);
 	
 
-	bool CheckCollision(Light* player, Wall* pWall);
+	bool CheckCollision(const Light* player,const Wall* pWall);
 	void ProcessCollision(Wall& wall);
 
 private:

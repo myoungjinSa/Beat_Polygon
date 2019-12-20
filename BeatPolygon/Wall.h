@@ -41,9 +41,9 @@ public:
 	void SetDepth(const float& d);
 
 	const glm::vec3& GetPosition() const { return position; }
-	const float& GetWidth() { return width; }
-	const float& GetHeight() { return height; }
-	const float& GetDepth() { return depth; }
+	const float& GetWidth() const { return width; }
+	const float& GetHeight() const { return height; }
+	const float& GetDepth() const { return depth; }
 
 	
 public:

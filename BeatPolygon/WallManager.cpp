@@ -188,7 +188,7 @@ void WallManager::ProcessCollision(Wall& wall)
 	}
 	
 }
-bool WallManager::CheckCollision(Light* player,Wall* pWall)
+bool WallManager::CheckCollision(const Light* player,const Wall* pWall)
 {
 	bool bCollision{ false };
 	float bonusSize = 0.5f;

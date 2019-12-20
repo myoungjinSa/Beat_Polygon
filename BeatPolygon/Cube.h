@@ -20,8 +20,6 @@ public:
 	const int vertexCount;
 	std::array<UVVertex, 36> vCube;
 
-
-	
 public:
 
 	explicit Cube();
