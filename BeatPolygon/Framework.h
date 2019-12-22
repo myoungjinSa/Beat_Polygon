@@ -66,7 +66,7 @@ public:
 
 
 	
-
+	void DeleteObjects();
 	inline const GLvoid Reshape(const int& w, const int& h);
 public:
 

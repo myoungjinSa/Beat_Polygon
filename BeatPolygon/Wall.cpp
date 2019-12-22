@@ -22,6 +22,23 @@ Wall::~Wall()
 	
 }
 
+bool Wall::GetBlowingUp()
+{
+	return b_Blowing;
+}
+
+void Wall::SetBlowingUp(const bool& b)
+{
+	b_Blowing = b;
+}
+bool Wall::GetActive()
+{
+	return b_Active;
+}
+void Wall::SetActive(const bool& t)
+{
+	b_Active = t;
+}
 
 void Wall::SetWidth(const float& w)
 {

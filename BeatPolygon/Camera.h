@@ -4,7 +4,7 @@ class Timer;
 class Camera
 {
 
-public:
+private:
 
 	glm::vec3 cameraPos;
 	glm::vec3 cameraTarget;

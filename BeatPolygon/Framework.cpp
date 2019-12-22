@@ -40,7 +40,14 @@ Framework::Framework()
 }
 Framework::~Framework()
 {
-	if (pCube)
+	
+	DeleteObjects();
+
+}
+
+void Framework::DeleteObjects()
+{
+		if (pCube)
 	{
 		for(int i =0;i<cubeCount;++i)
 		{
@@ -74,9 +81,6 @@ Framework::~Framework()
 
 	}
 	
-
-
-
 	if(pLight)
 	{
 		delete pLight;
@@ -93,11 +97,7 @@ Framework::~Framework()
 		delete[] pSnow;
 		pSnow = nullptr;
 	}
-
-
 }
-
-
 
 void Framework::CreateCamera(const glm::vec3& pos,const glm::vec3& dir,const glm::vec3& up)
 {

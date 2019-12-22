@@ -132,7 +132,7 @@ void WallManager::Update(const float& time, Light* player,const std::unique_ptr<
 #ifndef WRITE_MUSIC
 	if(t.count() >= nodeTimeVector[nodeIndex] - 2.5f && nodeIndex < blockCount-1)
 	{
-		walls[nodeIndex].b_Active = true;
+		walls[nodeIndex].SetActive(true);
 		std::cout << nodeIndex << std::endl;
 		nodeIndex++;
 		
@@ -142,7 +142,7 @@ void WallManager::Update(const float& time, Light* player,const std::unique_ptr<
 	static bool isHit{ false };
 	for (int i = 0; i < blockCount; ++i)
 	{
-		if (walls[i].b_Active == true)
+		if (walls[i].GetActive())
 		{
 			walls[i].Move(time);
 			if (CheckCollision(player, &walls[i]))
@@ -152,7 +152,7 @@ void WallManager::Update(const float& time, Light* player,const std::unique_ptr<
 			}
 			if (walls[i].GetPosition().z >= 1.0f)
 			{
-				walls[i].b_Active = false;
+				walls[i].SetActive(false);
 				isHit = false;
 				Framework::combo = 0;
 
@@ -177,14 +177,14 @@ void WallManager::Update(const float& time, Light* player,const std::unique_ptr<
 
 void WallManager::ProcessCollision(Wall& wall)
 {
-	if (wall.b_Blowing == false)
+	if (wall.GetBlowingUp() == false)
 	{
 
 		wall.SaveExplosionPos(wall.GetPosition());
-		wall.b_Blowing = true;
+		wall.SetBlowingUp(true);
 		Framework::hitCount += 1;
 		Framework::combo += 1;
-		wall.b_Active = false;
+		wall.SetActive(false);
 	}
 	
 }

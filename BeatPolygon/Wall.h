@@ -44,11 +44,11 @@ public:
 	const float& GetHeight() const { return height; }
 	const float& GetDepth() const { return depth; }
 
+	void SetActive(const bool& t);
+	bool GetActive();
 
-public:
-	volatile bool b_Blowing;
-	bool b_Active;
-
+	void SetBlowingUp(const bool& b);
+	bool GetBlowingUp();
 
 private:
 	std::array<glm::vec3, 4> aColors;
@@ -78,6 +78,9 @@ private:
 
 	glm::vec3 explosionPosition;
 	glm::vec3 position;
-	
+	bool b_Active;
 
+	
+	bool b_Blowing;
+	
 };
